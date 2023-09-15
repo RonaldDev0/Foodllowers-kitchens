@@ -4,7 +4,7 @@ import { NextUIProvider } from '@nextui-org/react'
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react'
 import { createPagesBrowserClient } from '@supabase/auth-helpers-nextjs'
 import { useRouter } from 'next/navigation'
-import { UserProvider } from '@/context'
+import { useUser } from '@/store'
 import type { SupabaseClient } from '@supabase/auth-helpers-nextjs'
 
 type Database = {
@@ -28,6 +28,7 @@ const Context = createContext<SupabaseContext | undefined>(undefined)
 export function Providers ({ children }: { children: ReactNode }) {
   const [supabase] = useState(() => createPagesBrowserClient())
   const router = useRouter()
+  const { setStore } = useUser()
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(() => router.refresh())
@@ -35,13 +36,18 @@ export function Providers ({ children }: { children: ReactNode }) {
     return () => subscription.unsubscribe()
   }, [router, supabase])
 
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }: any) => {
+      session && setStore('user', session)
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   return (
     <Context.Provider value={{ supabase }}>
-      <UserProvider>
-        <NextUIProvider>
-          {children}
-        </NextUIProvider>
-      </UserProvider>
+      <NextUIProvider>
+        {children}
+      </NextUIProvider>
     </Context.Provider>
   )
 }
