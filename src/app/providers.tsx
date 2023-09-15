@@ -4,7 +4,7 @@ import { NextUIProvider } from '@nextui-org/react'
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react'
 import { createPagesBrowserClient } from '@supabase/auth-helpers-nextjs'
 import { useRouter } from 'next/navigation'
-
+import { UserProvider } from '@/context'
 import type { SupabaseClient } from '@supabase/auth-helpers-nextjs'
 
 type Database = {
@@ -37,9 +37,11 @@ export function Providers ({ children }: { children: ReactNode }) {
 
   return (
     <Context.Provider value={{ supabase }}>
-      <NextUIProvider>
-        {children}
-      </NextUIProvider>
+      <UserProvider>
+        <NextUIProvider>
+          {children}
+        </NextUIProvider>
+      </UserProvider>
     </Context.Provider>
   )
 }
