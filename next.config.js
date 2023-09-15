@@ -1,2 +1,6 @@
 /** @type {import('next').NextConfig} */
-module.exports = {}
+module.exports = {
+  images: {
+    domains: ['lh3.googleusercontent.com', 'gtsjuxikwdifunrkhpyp.supabase.co']
+  }
+}
