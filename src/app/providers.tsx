@@ -40,6 +40,13 @@ export function Providers ({ children }: { children: ReactNode }) {
     supabase.auth.getSession().then(({ data: { session } }: any) => {
       session && setStore('user', session)
     })
+
+    supabase.channel('orders').on(
+      'postgres_changes',
+      { event: '*', schema: 'public', table: 'orders' },
+      payload => console.log(payload.new)
+    ).subscribe()
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
