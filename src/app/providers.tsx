@@ -42,7 +42,7 @@ export function Providers ({ children }: { children: ReactNode }) {
     supabase.channel('orders').on(
       'postgres_changes',
       { event: '*', schema: 'public', table: 'orders' },
-      payload => setStore('orders', payload.new)
+      payload => setStore('order', payload.new)
     ).subscribe()
 
     // eslint-disable-next-line react-hooks/exhaustive-deps

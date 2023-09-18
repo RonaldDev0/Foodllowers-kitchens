@@ -2,7 +2,13 @@ import { create } from 'zustand'
 
 interface State {
   user: any
-  orders: any
+  order: {
+    product: {
+      productName: string
+      description: string
+      price: number
+    }
+  } | null
 }
 
 interface Actions {
@@ -11,6 +17,6 @@ interface Actions {
 
 export const useData = create<State & Actions>(set => ({
   user: null,
-  orders: null,
+  order: null,
   setStore: (property, value) => set(prev => ({ ...prev, [property]: value }))
 }))
