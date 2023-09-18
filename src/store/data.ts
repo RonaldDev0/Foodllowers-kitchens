@@ -9,7 +9,7 @@ interface Actions {
   setStore: (property: keyof State, value: any) => void
 }
 
-export const useUser = create<State & Actions>(set => ({
+export const useData = create<State & Actions>(set => ({
   user: null,
   orders: null,
   setStore: (property, value) => set(prev => ({ ...prev, [property]: value }))

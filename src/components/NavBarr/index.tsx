@@ -1,9 +1,9 @@
 'use client'
 import Link from 'next/link'
-import { useUser } from '@/store'
+import { useData } from '@/store'
 
 export function NavBarr () {
-  const { user } = useUser()
+  const { user } = useData()
   return (
     <>
       {user && (

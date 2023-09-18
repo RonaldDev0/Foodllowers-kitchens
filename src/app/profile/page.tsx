@@ -1,12 +1,12 @@
 'use client'
 import { useSupabase } from '../providers'
-import { useUser } from '@/store'
+import { useData } from '@/store'
 import { Button } from '@nextui-org/react'
 import Image from 'next/image'
 
 export default function Profile () {
   const { supabase } = useSupabase()
-  const { user, setStore } = useUser()
+  const { user, setStore } = useData()
 
   const logout = () => supabase.auth.signOut().then(() => setStore('user', null))
 

@@ -1,9 +1,11 @@
 'use client'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
+import { useData } from '@/store'
 
 export default function Home () {
   const router = useRouter()
+  const { orders } = useData()
 
   useEffect(() => {
     setTimeout(() => {
@@ -13,7 +15,11 @@ export default function Home () {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  useEffect(() => {
+    console.log(orders)
+  }, [orders])
+
   return (
-    <h1>Helo world!</h1>
+    <p>{orders.JSON()}</p>
   )
 }

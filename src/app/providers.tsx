@@ -4,7 +4,7 @@ import { NextUIProvider } from '@nextui-org/react'
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react'
 import { createPagesBrowserClient } from '@supabase/auth-helpers-nextjs'
 import { useRouter } from 'next/navigation'
-import { useUser } from '@/store'
+import { useData } from '@/store'
 import type { SupabaseClient } from '@supabase/auth-helpers-nextjs'
 
 type Database = {
@@ -28,7 +28,7 @@ const Context = createContext<SupabaseContext | undefined>(undefined)
 export function Providers ({ children }: { children: ReactNode }) {
   const [supabase] = useState(() => createPagesBrowserClient())
   const router = useRouter()
-  const { setStore } = useUser()
+  const { setStore } = useData()
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(() => router.refresh())
@@ -37,14 +37,12 @@ export function Providers ({ children }: { children: ReactNode }) {
   }, [router, supabase])
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }: any) => {
-      session && setStore('user', session)
-    })
+    supabase.auth.getSession().then(({ data: { session } }: any) => session && setStore('user', session))
 
     supabase.channel('orders').on(
       'postgres_changes',
       { event: '*', schema: 'public', table: 'orders' },
-      payload => console.log(payload.new)
+      payload => setStore('orders', payload.new)
     ).subscribe()
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
