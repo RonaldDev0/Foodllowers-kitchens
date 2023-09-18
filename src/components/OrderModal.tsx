@@ -5,13 +5,18 @@ import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDi
 import Image from 'next/image'
 import { useData } from '@/store'
 import { useEffect } from 'react'
+import { Howl } from 'howler'
 
 export function OrderModal () {
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
   const { order } = useData()
+  const sound = new Howl({ src: ['../../notification.mp3'] })
 
   useEffect(() => {
-    order && onOpen()
+    if (order) {
+      sound.play()
+      onOpen()
+    }
   }, [order])
 
   return (

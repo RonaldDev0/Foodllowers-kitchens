@@ -2,14 +2,33 @@
 import Link from 'next/link'
 import { useData } from '@/store'
 
+interface IPath {
+  label: string
+  path: string
+}
+
 export function NavBarr () {
   const { user } = useData()
+  const paths: IPath[] = [
+    {
+      label: 'Home',
+      path: '/'
+    },
+    {
+      label: 'Dashboard',
+      path: '/dashboard'
+    },
+    {
+      label: 'Profile',
+      path: '/profile'
+    }
+  ]
+
   return (
     <>
       {user && (
-        <nav className='border-b border-blue-800 w-64 flex justify-around mb-10'>
-          <Link href='/'>Home</Link>
-          <Link href='/profile'>Profile</Link>
+        <nav className='border-b border-blue-800 w-64 flex justify-around mb-10 mt-5'>
+          {paths.map(({ label, path }) => <Link key={path} href={path}>{label}</Link>)}
         </nav>
       )}
     </>
