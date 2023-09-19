@@ -11,15 +11,15 @@ export function NavBarr () {
   const { user } = useData()
   const paths: IPath[] = [
     {
-      label: 'Home',
+      label: 'Inicio',
       path: '/'
     },
     {
-      label: 'Dashboard',
+      label: 'Metricas',
       path: '/dashboard'
     },
     {
-      label: 'Profile',
+      label: 'Perfil',
       path: '/profile'
     }
   ]
