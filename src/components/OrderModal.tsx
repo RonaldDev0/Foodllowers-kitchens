@@ -28,7 +28,7 @@ export function OrderModal () {
               <>
                 <ModalHeader className='flex flex-col gap-1'>{}</ModalHeader>
                 <ModalBody>
-                  <Image src='/../../img.webp' width='400' height='400' alt='img' className='rounded-xl' />
+                  <Image src='./img.webp' width='400' height='400' alt='img' className='rounded-xl' />
                   <p>{order.product.productName}</p>
                   <p className='text-green-600'>${order.product.price.toLocaleString()}</p>
                   <p>{order.product.description}</p>
