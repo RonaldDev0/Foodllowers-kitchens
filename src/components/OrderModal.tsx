@@ -1,8 +1,9 @@
+/* eslint-disable @next/next/no-img-element */
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure } from '@nextui-org/react'
-import Image from 'next/image'
+// import Image from 'next/image'
 import { useData } from '@/store'
 import { useEffect } from 'react'
 import { Howl } from 'howler'
@@ -28,7 +29,8 @@ export function OrderModal () {
               <>
                 <ModalHeader className='flex flex-col gap-1'>{}</ModalHeader>
                 <ModalBody>
-                  <Image src='/./img/img.avif' width='400' height='400' alt='img' className='rounded-xl' />
+                  {/* <Image src='./img.avif' width='400' height='400' alt='img' className='rounded-xl' /> */}
+                  <img src='./img.avif' alt='img' className='rounded-xl w-[400px]' />
                   <p>{order.product.productName}</p>
                   <p className='text-green-600'>${order.product.price.toLocaleString()}</p>
                   <p>{order.product.description}</p>
