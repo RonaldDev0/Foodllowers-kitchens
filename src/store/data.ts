@@ -4,7 +4,7 @@ interface State {
   user: any
   order: {
     product: {
-      productName: string
+      name: string
       description: string
       price: number
     }

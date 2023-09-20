@@ -30,7 +30,7 @@ export function OrderModal () {
 
   return (
     <>
-      <Button onClick={() => setStore('order', { product: { price: 30000, description: 'La mejor hamburguesa de la ciudad', productName: 'Hamburguesa' } })} color='primary'>Get order</Button>
+      <Button onClick={() => setStore('order', { product: { price: 30000, description: 'La mejor hamburguesa de la ciudad', name: 'Hamburguesa' } })} color='primary'>Get order</Button>
       {order && (
         <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
           <ModalContent>
@@ -42,7 +42,7 @@ export function OrderModal () {
                 </ModalHeader>
                 <ModalBody>
                   <img src='./img.avif' alt='img' className='rounded-xl w-[400px] h-[300px]' />
-                  <p>{order.product.productName}</p>
+                  <p>{order.product.name}</p>
                   <p className='text-green-600'>${order.product.price.toLocaleString()}</p>
                   <p className='text-gray-400'>{order.product.description}</p>
                 </ModalBody>
