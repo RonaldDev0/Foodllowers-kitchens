@@ -69,7 +69,7 @@ export function NavBarr () {
   return (
     <>
       {user && (
-        <nav className='border-b border-blue-800 w-64 flex justify-around items-center pb-2 mb-10 mt-5'>
+        <nav className='border-b border-blue-800 w-96 flex justify-around items-center pb-2 mb-10 mt-5'>
           {paths.map(({ label, path }) => <Link key={path} href={path}>{label}</Link>)}
           <Switch
             onClick={() => setDarkMode(!darkMode)}
