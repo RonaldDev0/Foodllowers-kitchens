@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 import Link from 'next/link'
 import { useData } from '@/store'
@@ -25,23 +24,51 @@ const SunIcon = (props: any) => (
   </svg>
 )
 
+const paths: IPath[] = [
+  {
+    label: 'Inicio',
+    path: '/'
+  },
+  {
+    label: 'Metricas',
+    path: '/dashboard'
+  },
+  {
+    label: 'Perfil',
+    path: '/profile'
+  }
+]
+
 export function NavBarr () {
   const { user } = useData()
   const [darkMode, setDarkMode] = useState<boolean>(true)
-  const paths: IPath[] = [{ label: 'Inicio', path: '/' }, { label: 'Metricas', path: '/dashboard' }, { label: 'Perfil', path: '/profile' }]
 
-  useEffect(() => !darkMode ? document.documentElement.classList.remove('dark') : document.documentElement.classList.add('dark'), [darkMode])
+  useEffect(() => {
+    if (!darkMode) {
+      document.documentElement.classList.remove('dark')
+      return
+    }
+    document.documentElement.classList.add('dark')
+  }, [darkMode])
   return (
     <>
       {user && (
         <nav className='border-b border-blue-800 w-96 flex justify-around items-center pb-2 mb-10 mt-5'>
-          {paths.map(({ label, path }) => <Link key={path} href={path}>{label}</Link>)}
+          {paths.map(({ label, path }) => (
+            <Link key={path} href={path}>
+              {label}
+            </Link>
+          ))}
           <Switch
             onClick={() => setDarkMode(!darkMode)}
             defaultSelected={!darkMode}
             size='md'
             color='secondary'
-            thumbIcon={({ isSelected, className }: any) => isSelected ? <SunIcon className={className} /> : <MoonIcon className={className} />}
+            thumbIcon={({ isSelected, className }: any) => (
+              isSelected
+                ? <SunIcon className={className} />
+                : <MoonIcon className={className} />
+            )}
           />
         </nav>
       )}

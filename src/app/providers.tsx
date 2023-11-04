@@ -37,15 +37,12 @@ export function Providers ({ children }: { children: ReactNode }) {
   }, [router, supabase])
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }: any) => session && setStore('user', session))
-
-    supabase.channel('orders').on(
-      'postgres_changes',
-      { event: '*', schema: 'public', table: 'orders' },
-      payload => setStore('order', payload.new)
-    ).subscribe()
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    supabase.auth.getSession()
+      .then(({ data: { session } }: any) => {
+        if (session) {
+          setStore('user', session)
+        }
+      })
   }, [])
 
   return (

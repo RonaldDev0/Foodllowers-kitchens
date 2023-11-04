@@ -8,7 +8,10 @@ export default function Profile () {
   const { supabase } = useSupabase()
   const { user, setStore } = useData()
 
-  const logout = () => supabase.auth.signOut().then(() => setStore('user', null))
+  const logout = () => {
+    supabase.auth.signOut()
+      .then(() => setStore('user', null))
+  }
 
   return (
     <main>
@@ -25,7 +28,9 @@ export default function Profile () {
           <h4>{user.user.user_metadata.email}</h4>
         </div>
       )}
-      <Button onClick={logout} color='primary'>Logout</Button>
+      <Button onClick={logout} color='primary'>
+        Logout
+      </Button>
     </main>
   )
 }

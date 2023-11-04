@@ -7,10 +7,17 @@ export async function middleware (req: NextRequest) {
   const supabase = createMiddlewareClient({ req, res })
   const { data: { session } }: any = await supabase.auth.getSession()
 
-  const isStaticFile = /\.(ico|svg|png|jpg|jpeg|gif|webp)$/.test(req.nextUrl.pathname)
-  const isNotLoginPage = !req.nextUrl.pathname.startsWith('/_next') && !isStaticFile && req.nextUrl.pathname !== '/login' && req.nextUrl.pathname !== '/manifest.json' && !req.nextUrl.searchParams.has('code')
+  const isStaticFile = /\.(ico|svg|png|jpg|jpeg|gif|webp)$/
+    .test(req.nextUrl.pathname)
 
-  if (req.url.endsWith('/login') && session?.user?.role === 'authenticated') {
+  const isNotLoginPage = !req.nextUrl.pathname.startsWith('/_next') &&
+    !isStaticFile &&
+    req.nextUrl.pathname !== '/login' &&
+    req.nextUrl.pathname !== '/manifest.json' &&
+    !req.nextUrl.searchParams.has('code')
+
+  if (req.url.endsWith('/login') &&
+    session?.user?.role === 'authenticated') {
     return NextResponse.redirect(new URL('/', req.url))
   }
 
