@@ -38,9 +38,27 @@ export function Providers ({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     supabase.auth.getSession()
-      .then(({ data: { session } }: any) => {
-        if (session) {
-          setStore('user', session)
+      .then(({ data: { session: { user } } }: any) => {
+        if (user) {
+          setStore('user', user)
+          supabase
+            .from('kitchens')
+            .select('*')
+            .eq('user_id', user.id)
+            .then(({ data }) => {
+              if (data) {
+                supabase.channel('orders').on(
+                  'postgres_changes',
+                  {
+                    event: 'INSERT',
+                    schema: 'public',
+                    table: 'orders',
+                    filter: `kitchen_id=eq.${data[0].id}`
+                  },
+                  payload => setStore('order', payload.new)
+                ).subscribe()
+              }
+            })
         }
       })
   }, [])

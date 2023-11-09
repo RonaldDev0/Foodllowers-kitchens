@@ -18,14 +18,14 @@ export default function Profile () {
       {user && (
         <div className='mb-6 flex flex-col justify-center gap-1'>
           <Image
-            src={user.user.user_metadata.avatar_url}
+            src={user.user_metadata.avatar_url}
             width='200'
             height='0'
             alt='avatar'
             className='rounded-full border-4 border-blue-700 p-1'
           />
-          <h3>@{user.user.user_metadata.full_name}</h3>
-          <h4>{user.user.user_metadata.email}</h4>
+          <h3>@{user.user_metadata.full_name}</h3>
+          <h4>{user.user_metadata.email}</h4>
         </div>
       )}
       <Button onClick={logout} color='primary'>

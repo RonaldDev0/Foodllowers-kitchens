@@ -1,5 +1,5 @@
 import { Providers } from './providers'
-import { NavBarr } from '@/components'
+import { NavBarr, OrderModal } from '@/components'
 import './globals.css'
 import type { Metadata } from 'next'
 import type { ReactNode } from 'react'
@@ -12,9 +12,10 @@ export const metadata: Metadata = {
 export default function RootLayout ({ children }: { children: ReactNode }) {
   return (
     <html lang='en' className='dark'>
-      <body className='h-screen flex justify-center'>
+      <body className='h-screen flex flex-col items-center'>
         <Providers>
           <NavBarr />
+          <OrderModal />
           {children}
         </Providers>
       </body>

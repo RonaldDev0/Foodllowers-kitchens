@@ -50,28 +50,29 @@ export function NavBarr () {
     }
     document.documentElement.classList.add('dark')
   }, [darkMode])
+
+  if (!user) {
+    return null
+  }
+
   return (
-    <>
-      {user && (
-        <nav className='border-b border-blue-800 w-96 flex justify-around items-center pb-2 mb-10 mt-5'>
-          {paths.map(({ label, path }) => (
-            <Link key={path} href={path}>
-              {label}
-            </Link>
-          ))}
-          <Switch
-            onClick={() => setDarkMode(!darkMode)}
-            defaultSelected={!darkMode}
-            size='md'
-            color='secondary'
-            thumbIcon={({ isSelected, className }: any) => (
-              isSelected
-                ? <SunIcon className={className} />
-                : <MoonIcon className={className} />
-            )}
-          />
-        </nav>
-      )}
-    </>
+    <nav className='border-b border-blue-800 w-96 flex justify-around items-center pb-2 mb-10 mt-5'>
+      {paths.map(({ label, path }) => (
+        <Link key={path} href={path}>
+          {label}
+        </Link>
+      ))}
+      <Switch
+        onClick={() => setDarkMode(!darkMode)}
+        defaultSelected={!darkMode}
+        size='md'
+        color='secondary'
+        thumbIcon={({ isSelected, className }: any) => (
+          isSelected
+            ? <SunIcon className={className} />
+            : <MoonIcon className={className} />
+        )}
+      />
+    </nav>
   )
 }

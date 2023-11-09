@@ -1,0 +1,9 @@
+{
+  "workbench.sideBar.location": "left",
+  "explorer.fileNesting.patterns": {
+    "tsconfig.json": "",
+    "package.json": ""
+  },
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.expand": true
+}
