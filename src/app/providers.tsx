@@ -38,26 +38,29 @@ export function Providers ({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     supabase.auth.getSession()
-      .then(({ data: { session: { user } } }: any) => {
-        if (user) {
-          setStore('user', user)
+      .then(({ data: { session } }: any) => {
+        if (session) {
+          setStore('user', session.user)
           supabase
             .from('kitchens')
             .select('*')
-            .eq('user_id', user.id)
+            .eq('user_id', session.user.id)
             .then(({ data }) => {
-              if (data) {
+              if (data?.length) {
+                setStore('kitchenId', data[0].id)
                 supabase.channel('orders').on(
                   'postgres_changes',
                   {
                     event: 'INSERT',
                     schema: 'public',
                     table: 'orders',
-                    filter: `kitchen_id=eq.${data[0].id}`
+                    filter: `kitchen_id=eq.${data[0]?.id}`
                   },
                   payload => setStore('order', payload.new)
                 ).subscribe()
+                return
               }
+              router.push('https://foodllowers.vercel.app/')
             })
         }
       })

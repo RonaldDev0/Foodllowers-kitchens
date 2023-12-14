@@ -1,6 +1,11 @@
 /** @type {import('next').NextConfig} */
 module.exports = {
   images: {
-    domains: ['lh3.googleusercontent.com', 'gtsjuxikwdifunrkhpyp.supabase.co']
+    remotePatterns: [{
+      hostname: 'lh3.googleusercontent.com'
+    },
+    {
+      hostname: 'gtsjuxikwdifunrkhpyp.supabase.co'
+    }]
   }
 }

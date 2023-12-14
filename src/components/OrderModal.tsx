@@ -5,21 +5,42 @@ import { useData } from '@/store'
 import { useEffect, useState } from 'react'
 import { Howl } from 'howler'
 import Image from 'next/image'
+import { useSupabase } from '@/app/providers'
 
 export function OrderModal () {
+  const { supabase } = useSupabase()
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
-  const { order, setStore } = useData()
+  const { order, active, setStore } = useData()
   const sound = new Howl({ src: ['../../notification.mp3'] })
   const [counter, setCounter] = useState(0)
 
   const getOrder = () => {
-    setStore('order', {
-      product: {
-        price: 30000,
-        description: 'La mejor hamburguesa de la ciudad',
-        name: 'Hamburguesa'
-      }
-    })
+    if (active) {
+      setStore('order', {
+        product: {
+          price: 30000,
+          description: 'La mejor hamburguesa de la ciudad',
+          name: 'Hamburguesa'
+        }
+      })
+      return
+    }
+    alert('No puedes recibir pedidos cuando estas desconectado!')
+  }
+
+  function acceptOrder (onClose: Function) {
+    if (order) {
+      supabase
+        .from('orders')
+        .update({ order_state: 'cocinando...' })
+        .eq('id', order.id)
+        .select()
+        .then(res => {
+          if (res.data) {
+            onClose()
+          }
+        })
+    }
   }
 
   useEffect(() => {
@@ -39,7 +60,7 @@ export function OrderModal () {
 
   return (
     <>
-      <Button onClick={getOrder} color='primary'>
+      <Button onClick={getOrder} color='secondary'>
         Get order
       </Button>
       {order && (
@@ -62,7 +83,7 @@ export function OrderModal () {
                 </ModalHeader>
                 <ModalBody>
                   <Image
-                    src='/img.avif'
+                    src={!order.product.preview ? '/img.avif' : order.product.preview}
                     width='400'
                     height='300'
                     alt='img'
@@ -85,7 +106,10 @@ export function OrderModal () {
                   >
                     Cancelar orden
                   </Button>
-                  <Button onPress={onClose} color='primary'>
+                  <Button
+                    onPress={() => acceptOrder(onClose)}
+                    color='primary'
+                  >
                     Aceptar orden
                   </Button>
                 </ModalFooter>
