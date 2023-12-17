@@ -4,16 +4,16 @@ import { NextUIProvider } from '@nextui-org/react'
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react'
 import { createPagesBrowserClient } from '@supabase/auth-helpers-nextjs'
 import { useRouter } from 'next/navigation'
-import { useData } from '@/store'
+import { useData, order } from '@/store'
 import type { SupabaseClient } from '@supabase/auth-helpers-nextjs'
 
 type Database = {
   public: {
     Tables: {
       movies: {
-        Row: {} // The data expected to be returned from a "select" statement.
-        Insert: {} // The data expected passed to an "insert" statement.
-        Update: {} // The data expected passed to an "update" statement.
+        Row: {}
+        Insert: {}
+        Update: {}
       }
     }
   }
@@ -28,7 +28,7 @@ const Context = createContext<SupabaseContext | undefined>(undefined)
 export function Providers ({ children }: { children: ReactNode }) {
   const [supabase] = useState(() => createPagesBrowserClient())
   const router = useRouter()
-  const { setStore } = useData()
+  const { addOrder, setStore } = useData()
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(() => router.refresh())
@@ -47,17 +47,25 @@ export function Providers ({ children }: { children: ReactNode }) {
             .eq('user_id', session.user.id)
             .then(({ data }) => {
               if (data?.length) {
-                setStore('kitchenId', data[0].id)
-                supabase.channel('orders').on(
-                  'postgres_changes',
-                  {
-                    event: 'INSERT',
-                    schema: 'public',
-                    table: 'orders',
-                    filter: `kitchen_id=eq.${data[0]?.id}`
-                  },
-                  payload => setStore('order', payload.new)
-                ).subscribe()
+                const kitchenId = data[0].id
+                setStore('kitchenId', kitchenId)
+                supabase
+                  .from('orders')
+                  .select('*')
+                  .eq('kitchen_id', kitchenId)
+                  .then(({ data }) => {
+                    setStore('orders', data)
+                    supabase.channel('orders').on(
+                      'postgres_changes',
+                      {
+                        event: 'INSERT',
+                        schema: 'public',
+                        table: 'orders',
+                        filter: `kitchen_id=eq.${kitchenId}`
+                      },
+                      payload => addOrder(payload.new as order)
+                    ).subscribe()
+                  })
                 return
               }
               router.push('https://foodllowers.vercel.app/')

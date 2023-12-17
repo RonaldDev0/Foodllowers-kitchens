@@ -3,11 +3,11 @@ import { useSupabase } from './providers'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect } from 'react'
 import { Switch } from '@nextui-org/react'
-import { OrderModal, Orders } from '@/components'
+import { Orders } from '@/components'
 import { useData } from '@/store'
 
 export default function Home () {
-  const { user, active, setStore } = useData()
+  const { user, active, orders, setStore } = useData()
   const { supabase } = useSupabase()
   const loginCode = useSearchParams().get('code')
   const router = useRouter()
@@ -47,11 +47,17 @@ export default function Home () {
 
   return (
     <main>
-      <nav className='flex justify-between'>
-        <h1>{active ? 'estas conectado' : 'no estas conectado'}</h1>
-        <Switch color='secondary' isSelected={!!active} onClick={setKitchenState} />
-      </nav>
-      <OrderModal />
+      <div className='flex justify-between'>
+        <p>{active ? 'estas conectado' : 'no estas conectado'}</p>
+        <Switch
+          color='secondary'
+          isSelected={!!active}
+          onClick={setKitchenState}
+        />
+      </div>
+      <p className='font-semibold mb-4'>
+        Pendientes: {orders.length}
+      </p>
       <Orders />
     </main>
   )
