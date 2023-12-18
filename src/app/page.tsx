@@ -3,11 +3,11 @@ import { useSupabase } from './providers'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect } from 'react'
 import { Switch } from '@nextui-org/react'
-import { Orders } from '@/components'
+import { Orders, CurrentOrder } from '@/components'
 import { useData } from '@/store'
 
 export default function Home () {
-  const { user, active, orders, setStore } = useData()
+  const { user, active, setStore } = useData()
   const { supabase } = useSupabase()
   const loginCode = useSearchParams().get('code')
   const router = useRouter()
@@ -55,9 +55,7 @@ export default function Home () {
           onClick={setKitchenState}
         />
       </div>
-      <p className='font-semibold mb-4'>
-        Pendientes: {orders.length}
-      </p>
+      <CurrentOrder />
       <Orders />
     </main>
   )

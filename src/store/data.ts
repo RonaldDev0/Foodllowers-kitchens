@@ -23,12 +23,14 @@ interface State {
     id: any
     product: any
   } | null
+  currentOrder: order | null
   orders: order[]
 }
 
 interface Actions {
   setStore: (property: keyof State, value: any) => void
   addOrder: (newOrder: order) => void
+  deleteOrder: (orderId: any) => void
 }
 
 export const useData = create<State & Actions>(set => ({
@@ -37,7 +39,9 @@ export const useData = create<State & Actions>(set => ({
   user: null,
   active: null,
   shipments: null,
+  currentOrder: null,
   orders: [],
   setStore: (property, value) => set(prev => ({ ...prev, [property]: value })),
-  addOrder: (newOrder) => set(state => ({ orders: [...state.orders, newOrder] }))
+  addOrder: (newOrder) => set(state => ({ orders: [...state.orders, newOrder] })),
+  deleteOrder: (orderId) => set(state => ({ orders: state.orders.filter(order => order.id !== orderId) }))
 }))

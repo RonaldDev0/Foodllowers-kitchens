@@ -1,24 +1,50 @@
 'use client'
 
 import { useData } from '@/store'
-// import { useEffect } from 'react'
-import { Card, CardBody, Button, Avatar, Chip } from '@nextui-org/react'
+import { useState, useEffect } from 'react'
+import { Card, CardBody, Button, Avatar, Chip, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure } from '@nextui-org/react'
 import { useSupabase } from '@/app/providers'
 // import { Howl } from 'howler'
 import Image from 'next/image'
 
 export function Orders () {
   const { supabase } = useSupabase()
-  const { orders } = useData()
+  const { orders, kitchenId, setStore, deleteOrder } = useData()
   // const sound = new Howl({ src: ['../../notification.mp3'] })
+  const { isOpen, onOpen, onOpenChange } = useDisclosure()
+
+  const [alert, setAlert] = useState<string | null>(null)
 
   function acceptOrder (order: any) {
     supabase
       .from('orders')
-      .update({ order_state: 'cocinando...' })
-      .eq('id', order.id)
-      .select()
+      .select('id')
+      .eq('kitchen_id', kitchenId)
+      .eq('order_state', 'cocinando...')
+      .then(({ data }) => {
+        if (!data?.length) {
+          supabase
+            .from('orders')
+            .update({ order_state: 'cocinando...' })
+            .eq('id', order.id)
+            .select()
+            .then(({ data }) => {
+              if (data?.length) {
+                deleteOrder(data[0].id)
+                setStore('currentOrder', data[0])
+              }
+            })
+          return
+        }
+        setAlert('No puedes preparar mas de 1 orden a la vez')
+      })
   }
+
+  useEffect(() => {
+    if (alert) {
+      onOpen()
+    }
+  }, [alert])
 
   // useEffect(() => {
   //   // if (orders) {
@@ -33,42 +59,72 @@ export function Orders () {
   }
 
   return (
-    <div className='flex flex-col gap-4'>
-      {orders.map((order, index) => (
-        <Card key={order.id}>
-          <CardBody className='p-0'>
-            <div className='flex'>
-              <Image
-                src={order.product.preview}
-                width='200'
-                height='250'
-                alt='preview'
-                className='rounded-lg h-36'
-              />
-              <Chip color='primary' className='absolute m-1'>
-                #{index + 1}
-              </Chip>
-              <div className='flex flex-col justify-around w-full px-2'>
-                <div className='flex justify-around'>
-                  <p>{order.product.name}</p>
-                  <p className='text-green-600'>
-                    ${order.product.price.toLocaleString()}
-                  </p>
+    <>
+      <div className='flex flex-col gap-4'>
+        <p className='font-semibold'>
+          Pendientes: {orders.length}
+        </p>
+        {orders.map((order, index) => (
+          <Card key={order.id}>
+            <CardBody className='p-0'>
+              <div className='flex'>
+                <Image
+                  src={order.product.preview}
+                  width='200'
+                  height='250'
+                  alt='preview'
+                  className='rounded-lg h-36'
+                />
+                <Chip color='primary' className='absolute m-1'>
+                  #{index + 1}
+                </Chip>
+                <div className='flex flex-col justify-around w-full px-2'>
+                  <div className='flex justify-around'>
+                    <p>{order.product.name}</p>
+                    <p className='text-green-600'>
+                      ${order.product.price.toLocaleString()}
+                    </p>
+                  </div>
+                  <div className='flex gap-1 items-center'>
+                    <Avatar src={order.product.influencers.preview} />
+                    <p className='opacity-80'>
+                      {order.product.influencers.full_name}
+                    </p>
+                  </div>
+                  <Button color='primary' onPress={() => acceptOrder(order)}>
+                    preparar pedido
+                  </Button>
                 </div>
-                <div className='flex gap-1 items-center'>
-                  <Avatar src={order.product.influencers.preview} />
-                  <p className='opacity-80'>
-                    {order.product.influencers.full_name}
-                  </p>
-                </div>
-                <Button color='secondary' onPress={() => acceptOrder(order)}>
-                  preparar pedido
-                </Button>
               </div>
-            </div>
-          </CardBody>
-        </Card>
-      ))}
-    </div>
+            </CardBody>
+          </Card>
+        ))}
+      </div>
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+        <ModalContent>
+          {onClose => (
+            <>
+              <ModalHeader>
+                <p>Error</p>
+              </ModalHeader>
+              <ModalBody>
+                <p>{alert}</p>
+              </ModalBody>
+              <ModalFooter>
+                <Button
+                  color='secondary'
+                  onPress={() => {
+                    onClose()
+                    setAlert(null)
+                  }}
+                >
+                  Aceptar
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+    </>
   )
 }

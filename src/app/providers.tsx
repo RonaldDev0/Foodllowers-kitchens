@@ -54,7 +54,8 @@ export function Providers ({ children }: { children: ReactNode }) {
                   .select('*')
                   .eq('kitchen_id', kitchenId)
                   .then(({ data }) => {
-                    setStore('orders', data)
+                    setStore('orders', data?.filter(order => order.order_state === 'buscando cocina...'))
+                    setStore('currentOrder', data?.filter(order => order.order_state === 'cocinando...')[0])
                     supabase.channel('orders').on(
                       'postgres_changes',
                       {
