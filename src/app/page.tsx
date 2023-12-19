@@ -47,7 +47,7 @@ export default function Home () {
 
   return (
     <main>
-      <div className='flex justify-between'>
+      <div className='w-full flex justify-center gap-48'>
         <p>{active ? 'estas conectado' : 'no estas conectado'}</p>
         <Switch
           color='secondary'
@@ -55,8 +55,10 @@ export default function Home () {
           onClick={setKitchenState}
         />
       </div>
-      <CurrentOrder />
-      <Orders />
+      <div className='flex gap-16 mt-24'>
+        <CurrentOrder />
+        <Orders />
+      </div>
     </main>
   )
 }

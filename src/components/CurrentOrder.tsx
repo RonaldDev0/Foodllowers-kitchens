@@ -28,7 +28,7 @@ export function CurrentOrder () {
   }
 
   return (
-    <div className='my-4'>
+    <div className='w-[24vw]'>
       <Card>
         <CardHeader className='pb-0'>
           Pedido en preparación:
@@ -48,11 +48,16 @@ export function CurrentOrder () {
                 ${currentOrder.product.price.toLocaleString()}
               </p>
             </div>
-            <div className='flex gap-1 items-center ml-14'>
-              <Avatar src={currentOrder.product.influencers.preview} />
-              <p className='opacity-80'>
-                {currentOrder.product.influencers.full_name}
-              </p>
+            <div className='flex justify-around'>
+              <div className='flex gap-1 items-center'>
+                <Avatar src={currentOrder.product.influencers.preview} />
+                <p className='opacity-80'>
+                  {currentOrder.product.influencers.full_name}
+                </p>
+              </div>
+              <div>
+                {}
+              </div>
             </div>
           </div>
         </CardBody>

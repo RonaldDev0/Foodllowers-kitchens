@@ -60,45 +60,47 @@ export function Orders () {
 
   return (
     <>
-      <div className='flex flex-col gap-4'>
-        <p className='font-semibold'>
+      <div>
+        <p className='font-semibold mb-2 text-large'>
           Pendientes: {orders.length}
         </p>
-        {orders.map((order, index) => (
-          <Card key={order.id}>
-            <CardBody className='p-0'>
-              <div className='flex'>
-                <Image
-                  src={order.product.preview}
-                  width='200'
-                  height='250'
-                  alt='preview'
-                  className='rounded-lg h-36'
-                />
-                <Chip color='primary' className='absolute m-1'>
-                  #{index + 1}
-                </Chip>
-                <div className='flex flex-col justify-around w-full px-2'>
-                  <div className='flex justify-around'>
-                    <p>{order.product.name}</p>
-                    <p className='text-green-600'>
-                      ${order.product.price.toLocaleString()}
-                    </p>
+        <div className='grid grid-cols-2 gap-4 max-h-[70vh] overflow-auto'>
+          {orders.map((order, index) => (
+            <Card key={order.id} className='w-96 h-min'>
+              <CardBody className='p-0'>
+                <div className='flex'>
+                  <Image
+                    src={order.product.preview}
+                    width='200'
+                    height='250'
+                    alt='preview'
+                    className='rounded-lg h-36'
+                  />
+                  <Chip color='primary' className='absolute m-1'>
+                    #{index + 1}
+                  </Chip>
+                  <div className='flex flex-col justify-around w-full px-2'>
+                    <div className='flex justify-around'>
+                      <p>{order.product.name}</p>
+                      <p className='text-green-600'>
+                        ${order.product.price.toLocaleString()}
+                      </p>
+                    </div>
+                    <div className='flex gap-1 items-center'>
+                      <Avatar src={order.product.influencers.preview} />
+                      <p className='opacity-80'>
+                        {order.product.influencers.full_name}
+                      </p>
+                    </div>
+                    <Button color='primary' onPress={() => acceptOrder(order)}>
+                      preparar pedido
+                    </Button>
                   </div>
-                  <div className='flex gap-1 items-center'>
-                    <Avatar src={order.product.influencers.preview} />
-                    <p className='opacity-80'>
-                      {order.product.influencers.full_name}
-                    </p>
-                  </div>
-                  <Button color='primary' onPress={() => acceptOrder(order)}>
-                    preparar pedido
-                  </Button>
                 </div>
-              </div>
-            </CardBody>
-          </Card>
-        ))}
+              </CardBody>
+            </Card>
+          ))}
+        </div>
       </div>
       <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
         <ModalContent>

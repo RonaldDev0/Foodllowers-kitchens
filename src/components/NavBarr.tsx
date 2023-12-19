@@ -29,8 +29,8 @@ export function NavBarr () {
   }
 
   return (
-    <nav className='w-96 flex justify-around items-center pb-2 mb-10 mt-5'>
-      <Card className='w-full'>
+    <nav className='w-full flex justify-around items-center mb-5 mt-5'>
+      <Card className='w-96'>
         <CardHeader className='flex justify-around'>
           <Link href='/'>
             <Home size={28} />
