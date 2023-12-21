@@ -55,7 +55,7 @@ export default function Home () {
           onClick={setKitchenState}
         />
       </div>
-      <div className='flex gap-16 mt-24'>
+      <div className='flex [@media(max-width:800px)]:flex-col gap-16 mt-24'>
         <CurrentOrder />
         <Orders />
       </div>

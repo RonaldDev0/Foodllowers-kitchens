@@ -28,7 +28,7 @@ export function CurrentOrder () {
   }
 
   return (
-    <div className='w-[24vw]'>
+    <div className='[@media(min-width:1000px)]:w-[24vw] [@media(max-width:800px)]:w-96]'>
       <Card>
         <CardHeader className='pb-0'>
           Pedido en preparación:

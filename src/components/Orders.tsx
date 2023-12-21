@@ -64,7 +64,13 @@ export function Orders () {
         <p className='font-semibold mb-2 text-large'>
           Pendientes: {orders.length}
         </p>
-        <div className='grid grid-cols-2 gap-4 max-h-[70vh] overflow-auto'>
+        <div className='
+          [@media(min-width:800px)]:grid
+          [@media(min-width:800px)]:grid-cols-2
+          [@media(max-width:800px)]:flex
+          [@media(max-width:800px)]:flex-col
+          gap-4 max-h-[70vh] overflow-auto'
+        >
           {orders.map((order, index) => (
             <Card key={order.id} className='w-96 h-min'>
               <CardBody className='p-0'>
