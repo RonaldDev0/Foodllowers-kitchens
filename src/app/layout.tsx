@@ -6,7 +6,8 @@ import type { ReactNode } from 'react'
 
 export const metadata: Metadata = {
   title: 'Foodllowers-Kitchens',
-  description: 'Foodllowers-Kitchens'
+  description: 'Foodllowers-Kitchens',
+  manifest: 'manifest.json'
 }
 
 export default function RootLayout ({ children }: { children: ReactNode }) {
