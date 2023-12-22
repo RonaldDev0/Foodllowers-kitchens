@@ -37,3 +37,15 @@ input[type="number"]::-webkit-inner-spin-button {
 input[type="number"] {
   appearance: textfield;
 }
+
+.dark .recharts-cartesian-axis-tick-value {
+  fill: white;
+}
+
+.dark .recharts-tooltip-label {
+  color: white;
+}
+
+.dark .recharts-legend-item-text {
+  fill: #333333;
+}
