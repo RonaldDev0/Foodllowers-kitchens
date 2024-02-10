@@ -17,6 +17,7 @@ export interface order {
 interface State {
   products: any
   kitchenId: any
+  kitchenAddress: any
   user: any
   active: boolean | null
   shipments: {
@@ -36,6 +37,7 @@ interface Actions {
 export const useData = create<State & Actions>(set => ({
   products: null,
   kitchenId: null,
+  kitchenAddress: null,
   user: null,
   active: null,
   shipments: null,

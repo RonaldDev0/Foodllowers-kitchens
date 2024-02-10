@@ -43,12 +43,13 @@ export function Providers ({ children }: { children: ReactNode }) {
           setStore('user', session.user)
           supabase
             .from('kitchens')
-            .select('*')
+            .select('id, address')
             .eq('user_id', session.user.id)
             .then(({ data }) => {
               if (data?.length) {
                 const kitchenId = data[0].id
                 setStore('kitchenId', kitchenId)
+                setStore('kitchenAddress', data[0].address)
                 supabase
                   .from('orders')
                   .select('*')
