@@ -58,10 +58,9 @@ export function CurrentOrder () {
             .eq('free', true)
             .then(({ data }) => {
               if (data?.length) {
-                const Deliverys = data.map(item => ({ ...item, current_location: JSON.parse(item.current_location) }))
-                const distances = Deliverys.map(delivery => ({
+                const distances = data.map(delivery => ({
                   delivery,
-                  distance: calculateHaversineDistance(JSON.parse(kitchenAddress), delivery.current_location)
+                  distance: calculateHaversineDistance(kitchenAddress, delivery.current_location)
                 }))
 
                 distances.sort((a, b) => a.distance.kilometers - b.distance.kilometers)
