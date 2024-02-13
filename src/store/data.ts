@@ -2,6 +2,7 @@ import { create } from 'zustand'
 
 export interface order {
   id: any
+  invoice_id: string
   product: {
     influencers: {
       full_name: string
@@ -17,6 +18,7 @@ export interface order {
 interface State {
   products: any
   kitchenId: any
+  ActivationCode: string | null
   kitchenAddress: any
   user: any
   active: boolean | null
@@ -37,6 +39,7 @@ interface Actions {
 export const useData = create<State & Actions>(set => ({
   products: null,
   kitchenId: null,
+  ActivationCode: null,
   kitchenAddress: null,
   user: null,
   active: null,

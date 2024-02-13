@@ -91,6 +91,13 @@ export function CurrentOrder () {
           Pedido en preparación:
         </CardHeader>
         <CardBody>
+          <div className='flex gap-3 mb-2'>
+            <p>Numero de factura:</p>
+            <div className='flex justify-center items-center'>
+              <p>{currentOrder.invoice_id.slice(0, 6)}-</p>
+              <p className='font-bold text-lg'>{currentOrder.invoice_id.slice(6, 10)}</p>
+            </div>
+          </div>
           <Image
             src={currentOrder.product.preview}
             width='200'

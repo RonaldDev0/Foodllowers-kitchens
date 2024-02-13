@@ -3,7 +3,7 @@ import { useSupabase } from './providers'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect } from 'react'
 import { Switch } from '@nextui-org/react'
-import { Orders, CurrentOrder } from '@/components'
+import { Orders, CurrentOrder, ActivationCode } from '@/components'
 import { useData } from '@/store'
 
 export default function Home () {
@@ -55,7 +55,8 @@ export default function Home () {
           onClick={setKitchenState}
         />
       </div>
-      <div className='flex [@media(max-width:800px)]:flex-col gap-16 mt-24'>
+      <ActivationCode />
+      <div className='flex [@media(max-width:800px)]:flex-col gap-16 mt-16'>
         <CurrentOrder />
         <Orders />
       </div>
