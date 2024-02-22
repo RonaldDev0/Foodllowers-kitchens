@@ -32,8 +32,7 @@ function calculateHaversineDistance (origin: Coordinate, destination: Coordinate
 
   const distance = earthRadius * c
 
-  // FIXME: Le sumo 2 kilometros que es el promedio de diferencia con google maps segun las pruebas (corregir)
-  return { kilometers: distance + 2 }
+  return { kilometers: distance }
 }
 
 export function CurrentOrder () {
@@ -43,39 +42,39 @@ export function CurrentOrder () {
   const finishOrder = () => {
     if (currentOrder) {
       supabase
-        .from('orders')
-        .update({ order_state: 'buscando delivery...' })
-        .eq('id', currentOrder.id)
-        .select('*')
+        .from('deliverys')
+        .select('id, current_location')
+        .eq('active', true)
+        .eq('free', true)
         .then(({ data }) => {
-          if (data?.length === 0 || kitchenAddress === null) {
-            return
-          }
-          supabase
-            .from('deliverys')
-            .select('id, current_location')
-            .eq('active', true)
-            .eq('free', true)
-            .then(({ data }) => {
-              if (data?.length) {
-                const distances = data.map(delivery => ({
-                  delivery,
-                  distance: calculateHaversineDistance(kitchenAddress, delivery.current_location)
-                }))
+          if (data?.length) {
+            const distances = data.map(delivery => ({
+              delivery,
+              distance: calculateHaversineDistance(kitchenAddress, delivery.current_location)
+            }))
 
-                distances.sort((a, b) => a.distance.kilometers - b.distance.kilometers)
-                supabase
-                  .from('orders')
-                  .update({ delivery_id: distances[0].delivery.id })
-                  .eq('id', currentOrder.id)
-                  .select('*')
-                  .then(({ data }) => {
-                    if (data?.length) {
+            distances.sort((a, b) => a.distance.kilometers - b.distance.kilometers)
+            supabase
+              .from('orders')
+              .update({ delivery_id: distances[0].delivery.id })
+              .eq('id', currentOrder.id)
+              .select('*')
+              .then(({ data }) => {
+                if (data?.length) {
+                  supabase
+                    .from('orders')
+                    .update({ order_state: 'buscando delivery...' })
+                    .eq('id', currentOrder.id)
+                    .select('*')
+                    .then(({ data }) => {
+                      if (data?.length === 0 || kitchenAddress === null) {
+                        return
+                      }
                       setStore('currentOrder', null)
-                    }
-                  })
-              }
-            })
+                    })
+                }
+              })
+          }
         })
     }
   }
