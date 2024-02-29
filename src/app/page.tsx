@@ -3,7 +3,7 @@ import { useSupabase } from './providers'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect } from 'react'
 import { Switch } from '@nextui-org/react'
-import { Orders, CurrentOrder, ActivationCode } from '@/components'
+import { Orders, CurrentOrder, ActivationCode, Setup } from '@/components'
 import { useData } from '@/store'
 
 export default function Home () {
@@ -59,6 +59,7 @@ export default function Home () {
       <div className='flex [@media(max-width:800px)]:flex-col gap-16 mt-16'>
         <CurrentOrder />
         <Orders />
+        <Setup />
       </div>
     </main>
   )

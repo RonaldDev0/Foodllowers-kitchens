@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { useData } from '@/store'
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Avatar, Card, CardHeader } from '@nextui-org/react'
 import { useState, useEffect } from 'react'
-import { Home, User, BarChart3, Moon, Sun, LogOut, ChefHat } from 'lucide-react'
+import { Home, User, BarChart3, Moon, Sun, LogOut, ChefHat, Settings } from 'lucide-react'
 import { useSupabase } from '../app/providers'
 
 export function NavBarr () {
@@ -46,11 +46,21 @@ export function NavBarr () {
               <Avatar size='md' className='cursor-pointer' src={user.user_metadata.avatar_url} />
             </DropdownTrigger>
             <DropdownMenu aria-label='Static Actions'>
-              <DropdownItem href='/profile'>
-                <div className='flex gap-3'>
-                  <User />
-                  <p>Profile</p>
-                </div>
+              <DropdownItem>
+                <Link href='/settings'>
+                  <div className='flex gap-3'>
+                    <Settings />
+                    <p>Settings</p>
+                  </div>
+                </Link>
+              </DropdownItem>
+              <DropdownItem>
+                <Link href='/profile'>
+                  <div className='flex gap-3'>
+                    <User />
+                    <p>Profile</p>
+                  </div>
+                </Link>
               </DropdownItem>
               <DropdownItem onPress={() => setDarkMode(true)}>
                 <div className='flex gap-3'>
