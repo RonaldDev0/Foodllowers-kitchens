@@ -70,7 +70,16 @@ export function CurrentOrder () {
                       if (data?.length === 0 || kitchenAddress === null) {
                         return
                       }
-                      setStore('currentOrder', null)
+                      supabase
+                        .from('deliverys')
+                        .update({ free: false })
+                        .eq('id', distances[0].delivery.id)
+                        .select('id')
+                        .then(() => {
+                          if (data?.length) {
+                            setStore('currentOrder', null)
+                          }
+                        })
                     })
                 }
               })
