@@ -18,6 +18,7 @@ export interface order {
 interface State {
   products: any
   kitchenId: any
+  kitchen: any
   ActivationCode: string | null
   kitchenAddress: any
   user: any
@@ -39,6 +40,7 @@ interface Actions {
 export const useData = create<State & Actions>(set => ({
   products: null,
   kitchenId: null,
+  kitchen: null,
   ActivationCode: null,
   kitchenAddress: null,
   user: null,
