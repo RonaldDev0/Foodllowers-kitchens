@@ -41,7 +41,7 @@ const Toast: FC<ToastProps> = ({ message, isVisible, onClose }) => {
   )
 }
 
-export function Address () {
+export default function Address () {
   const { supabase } = useSupabase()
   const { kitchenId, kitchenAddress, setStore } = useData()
 

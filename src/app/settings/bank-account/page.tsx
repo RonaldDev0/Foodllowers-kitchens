@@ -1,5 +1,5 @@
 'use client'
-import { useSupabase } from '../providers'
+import { useSupabase } from '@/app/providers'
 import { useState, useEffect, FC } from 'react'
 import { Card, CardHeader, CardBody, Select, SelectItem, Input, Button } from '@nextui-org/react'
 import { Landmark } from 'lucide-react'
@@ -75,7 +75,7 @@ const banks = [
   }
 ]
 
-export function BankAccount () {
+export default function BankAccount () {
   const { kitchen, kitchenId, setStore } = useData()
   const { supabase } = useSupabase()
 
