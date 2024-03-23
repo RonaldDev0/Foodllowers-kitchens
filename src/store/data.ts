@@ -5,6 +5,7 @@ export interface order {
   invoice_id: string
   product: {
     influencers: {
+      avatar: string | undefined
       full_name: string
       preview: string
     }

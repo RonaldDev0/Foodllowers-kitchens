@@ -93,7 +93,7 @@ export function Orders () {
                       </p>
                     </div>
                     <div className='flex gap-1 items-center'>
-                      <Avatar src={order.product.influencers.preview} />
+                      <Avatar src={order.product.influencers.avatar} />
                       <p className='opacity-80'>
                         {order.product.influencers.full_name}
                       </p>

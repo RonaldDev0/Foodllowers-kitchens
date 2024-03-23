@@ -29,7 +29,7 @@ export default function Products () {
     if (kitchenId && !products) {
       supabase
         .from('products')
-        .select('id, preview, name, category, description, price, state, influencers( full_name, preview )')
+        .select('id, preview, name, category, description, price, state, influencers( full_name, avatar )')
         .match({
           id_kitchen: kitchenId
         })
@@ -42,7 +42,7 @@ export default function Products () {
   }, [kitchenId])
 
   return (
-    <main>
+    <main className='flex flex-wrap gap-5 justify-center max-w-7xl'>
       {products?.map((product: any) => (
         <Card key={product.id}>
           <CardBody className='p-0'>
@@ -55,7 +55,7 @@ export default function Products () {
             />
             <div className='p-4 flex justify-between items-center'>
               <div className='flex gap-3 items-center'>
-                <Avatar src={product.influencers.preview} />
+                <Avatar src={product.influencers.avatar} />
                 <div>
                   <p className='text-xl'>{product.name}</p>
                   <p className='opacity-60'>{product.influencers.full_name}</p>

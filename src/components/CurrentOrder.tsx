@@ -123,7 +123,7 @@ export function CurrentOrder () {
             </div>
             <div className='flex justify-around'>
               <div className='flex gap-1 items-center'>
-                <Avatar src={currentOrder.product.influencers.preview} />
+                <Avatar src={currentOrder.product.influencers.avatar} />
                 <p className='opacity-80'>
                   {currentOrder.product.influencers.full_name}
                 </p>

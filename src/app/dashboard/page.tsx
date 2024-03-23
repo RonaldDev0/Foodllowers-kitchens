@@ -6,10 +6,6 @@ import { Graphic } from './Graphic'
 
 const getIntroOfPage = (label: any) => {
   switch (label) {
-    // case 'pizza':
-    //   return 'Ronald es un man muy aspero'
-    // case 'hamburguesa':
-    //   return 'Saenz es un sticker, no sabe nada de la vida'
     default:
       return ''
   }
