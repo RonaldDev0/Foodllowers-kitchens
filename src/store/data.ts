@@ -17,6 +17,7 @@ export interface order {
 }
 
 interface State {
+  darkMode: boolean
   products: any
   kitchenId: any
   kitchen: any
@@ -39,6 +40,7 @@ interface Actions {
 }
 
 export const useData = create<State & Actions>(set => ({
+  darkMode: true,
   products: null,
   kitchenId: null,
   kitchen: null,
