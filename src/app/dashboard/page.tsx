@@ -1,46 +1,11 @@
-'use client'
-import { useData } from '@/store'
-import { useSupabase } from '../providers'
-import { useEffect } from 'react'
-import { Graphic } from './Graphic'
+import { Balance } from './Balance'
+import { History } from './History'
 
-const getIntroOfPage = (label: any) => {
-  switch (label) {
-    default:
-      return ''
-  }
-}
-
-export default function Dashboard () {
-  const { supabase } = useSupabase()
-  const { shipments, kitchenId, setStore } = useData()
-
-  useEffect(() => {
-    if (!shipments && kitchenId) {
-      supabase
-        .from('orders')
-        .select('*')
-        .eq('kitchen_id', kitchenId)
-        .then(res => {
-          if (res.data?.length) {
-            setStore('shipments', res.data)
-          }
-        })
-    }
-  }, [kitchenId])
-
-  if (!shipments || !kitchenId) {
-    return null
-  }
-
+export default function DashboardPage () {
   return (
-    <main>
-      <Graphic
-        data={shipments}
-        bars={[{ value: 'price', dataKey: 'product.price', color: '#6b48ff' }]}
-        XDataKey='product.name'
-        getIntroOfPage={getIntroOfPage}
-      />
+    <main className='flex flex-col justify-center items-center gap-10'>
+      <Balance />
+      <History />
     </main>
   )
 }

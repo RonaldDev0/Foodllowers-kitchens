@@ -2,7 +2,7 @@
 import Link from 'next/link'
 import { useData } from '@/store'
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Avatar, Card, CardHeader } from '@nextui-org/react'
-import { Home, User, BarChart3, LogOut, ChefHat, Settings } from 'lucide-react'
+import { Home, User, History, LogOut, ChefHat, Settings } from 'lucide-react'
 import { useSupabase } from '../app/providers'
 
 export function NavBarr () {
@@ -29,7 +29,7 @@ export function NavBarr () {
             <ChefHat size={28} />
           </Link>
           <Link href='/dashboard'>
-            <BarChart3 size={28} />
+            <History size={28} />
           </Link>
           <Dropdown>
             <DropdownTrigger>
