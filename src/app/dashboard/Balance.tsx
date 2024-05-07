@@ -4,20 +4,20 @@ import { useData } from '@/store'
 import { useSupabase } from '../providers'
 
 export function Balance () {
-  const { deliveryId } = useData()
+  const { kitchenId } = useData()
   const { supabase } = useSupabase()
 
   const [balance, setBalance] = useState<number>(0)
 
   useEffect(() => {
-    if (!deliveryId) {
+    if (!kitchenId) {
       return
     }
 
     supabase
-      .from('deliverys')
+      .from('kitchens')
       .select('balance')
-      .eq('id', deliveryId)
+      .eq('id', kitchenId)
       .single()
       .then(({ data, error }) => {
         if (error) {
@@ -25,7 +25,7 @@ export function Balance () {
         }
         setBalance(data.balance)
       })
-  }, [deliveryId])
+  }, [kitchenId])
 
   return (
     <div className='flex flex-col items-center'>
