@@ -44,8 +44,7 @@ export function CurrentOrder () {
       supabase
         .from('deliverys')
         .select('id, current_location')
-        .neq('register_complete', false)
-        .neq('bank_account', null)
+        .eq('register_complete', true)
         .eq('active', true)
         .eq('free', true)
         .then(({ data }) => {
