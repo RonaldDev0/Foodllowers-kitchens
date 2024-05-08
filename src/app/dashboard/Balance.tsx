@@ -1,16 +1,14 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import { useData } from '@/store'
 import { useSupabase } from '../providers'
 
 export function Balance () {
-  const { kitchenId } = useData()
+  const { kitchenId, balance, balanceFetched, setStore } = useData()
   const { supabase } = useSupabase()
 
-  const [balance, setBalance] = useState<number>(0)
-
   useEffect(() => {
-    if (!kitchenId) {
+    if (!kitchenId || balanceFetched) {
       return
     }
 
@@ -23,7 +21,8 @@ export function Balance () {
         if (error) {
           return
         }
-        setBalance(data.balance)
+        setStore('balance', data.balance)
+        setStore('balanceFetched', true)
       })
   }, [kitchenId])
 

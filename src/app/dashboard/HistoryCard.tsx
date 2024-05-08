@@ -1,7 +1,12 @@
 'use client'
 import { Card, CardBody, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Button } from '@nextui-org/react'
 import { ArrowRight } from 'lucide-react'
-import type { Item } from './History'
+
+export interface Item {
+  id: string
+  created_at: string
+  amount: number
+}
 
 export function HistoryCard ({ item }: { item: Item }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure()

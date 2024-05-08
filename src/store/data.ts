@@ -18,6 +18,13 @@ export interface order {
 
 interface State {
   darkMode: boolean
+  balanceFetched: boolean
+  balance: number
+  balanceHistory: {
+    id: string
+    created_at: string
+    amount: number
+  }[]
   products: any
   kitchenId: any
   kitchen: any
@@ -41,6 +48,9 @@ interface Actions {
 
 export const useData = create<State & Actions>(set => ({
   darkMode: true,
+  balanceFetched: false,
+  balance: 0,
+  balanceHistory: [],
   products: null,
   kitchenId: null,
   kitchen: null,
