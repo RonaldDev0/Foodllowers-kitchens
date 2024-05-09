@@ -68,22 +68,27 @@ export function Providers ({ children }: { children: ReactNode }) {
                         table: 'orders',
                         filter: `kitchen_id=eq.${kitchenId}`
                       },
-                      ({ new: newOrder }: any) => {
-                        if (newOrder.product) {
-                          addOrder(newOrder)
-                          console.log('not fetch aditional data')
+                      (payload: any) => {
+                        if (payload.eventType === 'DELETE') {
+                          setStore('orders', data?.filter(order => order.id !== payload.new.id))
+                          setStore('currentOrder', data?.filter(order => order.id !== payload.new.id)[0])
                           return
                         }
-                        console.log('fetch aditional data')
-                        supabase
-                          .from('orders')
-                          .select('*')
-                          .eq('kitchen_id', kitchenId)
-                          .eq('payment_status', 'approved')
-                          .then(({ data }) => {
-                            setStore('orders', data?.filter(order => order.order_state === 'buscando cocina...'))
-                            setStore('currentOrder', data?.filter(order => order.order_state === 'cocinando...')[0])
-                          })
+                        if (payload.eventType === 'INSERT' || payload.eventType === 'UPDATE') {
+                          if (payload.new.product) {
+                            addOrder(payload.new)
+                            return
+                          }
+                          supabase
+                            .from('orders')
+                            .select('*')
+                            .eq('kitchen_id', kitchenId)
+                            .eq('payment_status', 'approved')
+                            .then(({ data }) => {
+                              setStore('orders', data?.filter(order => order.order_state === 'buscando cocina...'))
+                              setStore('currentOrder', data?.filter(order => order.order_state === 'cocinando...')[0])
+                            })
+                        }
                       }
                     ).subscribe()
                   })
