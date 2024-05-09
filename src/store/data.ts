@@ -3,6 +3,7 @@ import { create } from 'zustand'
 export interface order {
   id: any
   invoice_id: string
+  payment_status: string
   product: {
     influencers: {
       avatar: string | undefined

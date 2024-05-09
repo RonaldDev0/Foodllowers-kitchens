@@ -54,7 +54,7 @@ export function Orders () {
   //   console.log(orders)
   // }, [orders])
 
-  if (orders === null) {
+  if (!orders) {
     return
   }
 

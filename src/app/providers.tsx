@@ -4,7 +4,7 @@ import { NextUIProvider } from '@nextui-org/react'
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react'
 import { createPagesBrowserClient } from '@supabase/auth-helpers-nextjs'
 import { useRouter } from 'next/navigation'
-import { useData, order } from '@/store'
+import { useData } from '@/store'
 import type { SupabaseClient } from '@supabase/auth-helpers-nextjs'
 
 type Database = {
@@ -56,18 +56,35 @@ export function Providers ({ children }: { children: ReactNode }) {
                   .from('orders')
                   .select('*')
                   .eq('kitchen_id', kitchenId)
+                  .eq('payment_status', 'approved')
                   .then(({ data }) => {
                     setStore('orders', data?.filter(order => order.order_state === 'buscando cocina...'))
                     setStore('currentOrder', data?.filter(order => order.order_state === 'cocinando...')[0])
                     supabase.channel('orders').on(
                       'postgres_changes',
                       {
-                        event: 'INSERT',
+                        event: '*',
                         schema: 'public',
                         table: 'orders',
                         filter: `kitchen_id=eq.${kitchenId}`
                       },
-                      payload => addOrder(payload.new as order)
+                      ({ new: newOrder }: any) => {
+                        if (newOrder.product) {
+                          addOrder(newOrder)
+                          console.log('not fetch aditional data')
+                          return
+                        }
+                        console.log('fetch aditional data')
+                        supabase
+                          .from('orders')
+                          .select('*')
+                          .eq('kitchen_id', kitchenId)
+                          .eq('payment_status', 'approved')
+                          .then(({ data }) => {
+                            setStore('orders', data?.filter(order => order.order_state === 'buscando cocina...'))
+                            setStore('currentOrder', data?.filter(order => order.order_state === 'cocinando...')[0])
+                          })
+                      }
                     ).subscribe()
                   })
                 return
