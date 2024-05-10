@@ -28,7 +28,7 @@ const Context = createContext<SupabaseContext | undefined>(undefined)
 export function Providers ({ children }: { children: ReactNode }) {
   const [supabase] = useState(() => createPagesBrowserClient())
   const router = useRouter()
-  const { addOrder, setStore } = useData()
+  const { addOrder, setStore, orders, currentOrder } = useData()
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(() => router.refresh())
@@ -70,8 +70,8 @@ export function Providers ({ children }: { children: ReactNode }) {
                       },
                       (payload: any) => {
                         if (payload.eventType === 'DELETE') {
-                          setStore('orders', data?.filter(order => order.id !== payload.new.id))
-                          setStore('currentOrder', data?.filter(order => order.id !== payload.new.id)[0])
+                          setStore('orders', orders?.filter(order => order.id !== payload.new.id))
+                          setStore('currentOrder', currentOrder?.id === payload.new.id ? null : currentOrder)
                           return
                         }
                         if (payload.eventType === 'INSERT' || payload.eventType === 'UPDATE') {
