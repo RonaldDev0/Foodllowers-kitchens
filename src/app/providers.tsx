@@ -54,9 +54,10 @@ export function Providers ({ children }: { children: ReactNode }) {
                 setStore('kitchen', data[0])
                 supabase
                   .from('orders')
-                  .select('*')
+                  .select('id, order_state, invoice_id, product')
                   .eq('kitchen_id', kitchenId)
                   .eq('payment_status', 'approved')
+                  .in('order_state', ['buscando cocina...', 'cocinando...'])
                   .then(({ data }) => {
                     setStore('orders', data?.filter(order => order.order_state === 'buscando cocina...'))
                     setStore('currentOrder', data?.filter(order => order.order_state === 'cocinando...')[0])
@@ -75,15 +76,15 @@ export function Providers ({ children }: { children: ReactNode }) {
                           return
                         }
                         if (payload.eventType === 'INSERT' || payload.eventType === 'UPDATE') {
-                          if (payload.new.product) {
-                            addOrder(payload.new)
-                            return
-                          }
+                          if (payload.eventType === 'INSERT') setStore('soundAlert', true)
+                          if (payload.new.product) return addOrder(payload.new)
+
                           supabase
                             .from('orders')
-                            .select('*')
+                            .select('id, order_state, invoice_id, product')
                             .eq('kitchen_id', kitchenId)
                             .eq('payment_status', 'approved')
+                            .in('order_state', ['buscando cocina...', 'cocinando...'])
                             .then(({ data }) => {
                               setStore('orders', data?.filter(order => order.order_state === 'buscando cocina...'))
                               setStore('currentOrder', data?.filter(order => order.order_state === 'cocinando...')[0])

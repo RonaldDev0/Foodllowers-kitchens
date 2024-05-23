@@ -1,5 +1,5 @@
 import { Providers } from './providers'
-import { NavBarr } from '@/components'
+import { NavBarr, SoundAlert } from '@/components'
 import { Analytics } from '@vercel/analytics/react'
 import './globals.css'
 import type { Metadata } from 'next'
@@ -18,6 +18,7 @@ export default function RootLayout ({ children }: { children: ReactNode }) {
         <Providers>
           <NavBarr />
           {children}
+          <SoundAlert />
           <Analytics />
         </Providers>
       </body>

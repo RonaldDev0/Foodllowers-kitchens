@@ -4,13 +4,11 @@ import { useData } from '@/store'
 import { useState, useEffect } from 'react'
 import { Card, CardBody, Button, Avatar, Chip, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure } from '@nextui-org/react'
 import { useSupabase } from '@/app/providers'
-// import { Howl } from 'howler'
 import Image from 'next/image'
 
 export function Orders () {
   const { supabase } = useSupabase()
   const { orders, kitchenId, setStore, deleteOrder } = useData()
-  // const sound = new Howl({ src: ['../../notification.mp3'] })
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
   const [alert, setAlert] = useState<string | null>(null)
@@ -45,14 +43,6 @@ export function Orders () {
       onOpen()
     }
   }, [alert])
-
-  // useEffect(() => {
-  //   // if (orders) {
-  //   //   sound.play()
-  //   // }
-
-  //   console.log(orders)
-  // }, [orders])
 
   if (!orders) {
     return
