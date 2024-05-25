@@ -22,11 +22,11 @@ export function ColorSchema () {
   const { darkMode, setStore } = useData()
 
   useEffect(() => {
-    if (!darkMode) {
-      document.documentElement.classList.remove('dark')
-      return
-    }
-    document.documentElement.classList.add('dark')
+    !darkMode
+      ? document.documentElement.classList.remove('dark')
+      : document.documentElement.classList.add('dark')
+
+    localStorage.setItem('darkMode', JSON.stringify(darkMode))
   }, [darkMode])
 
   return (
