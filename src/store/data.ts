@@ -50,7 +50,7 @@ interface Actions {
 
 export const useData = create<State & Actions>(set => ({
   soundAlert: false,
-  darkMode: JSON.parse(localStorage.getItem('darkMode') || 'true'),
+  darkMode: typeof window !== 'undefined' && JSON.parse(localStorage.getItem('darkMode') || 'true'),
   balanceFetched: false,
   balance: 0,
   balanceHistory: [],
