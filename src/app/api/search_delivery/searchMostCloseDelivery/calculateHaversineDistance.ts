@@ -8,14 +8,10 @@ interface CoordinateDestination {
   longitude: number
 }
 
-interface Distance {
-  kilometers: number
-}
-
 const degToRad = Math.PI / 180 // Convertir grados a radianes directamente
 const earthRadius = 6371 // Radio de la Tierra en kilómetros
 
-export function calculateHaversineDistance (origin: CoordinateOrigin, destination: CoordinateDestination): Distance {
+export function calculateHaversineDistance (origin: CoordinateOrigin, destination: CoordinateDestination): number {
   // Convertir grados a radianes directamente
   const originLatRad = origin.lat * degToRad
   const originLonRad = origin.lng * degToRad
@@ -36,5 +32,5 @@ export function calculateHaversineDistance (origin: CoordinateOrigin, destinatio
 
   const distance = earthRadius * c
 
-  return { kilometers: distance }
+  return Math.round(distance * 10) / 10
 }

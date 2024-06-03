@@ -12,7 +12,6 @@ export async function POST (req: NextRequest) {
 
   const { delivery_id, error } = await searchMostCloseDelivery(kitchenAddress)
   if (error || !delivery_id) {
-    console.log({ error, delivery_id })
     return NextResponse.json({ error: 'delivery not found' })
   }
   updateOrderWithDeliveryID(orderID, delivery_id)

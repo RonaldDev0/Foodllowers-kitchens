@@ -15,9 +15,7 @@ export async function searchMostCloseDelivery (kitchenAddress: IAddress): Promis
   const { data, error } = await supabase
     .from('deliverys')
     .select('id, current_location')
-    .eq('register_complete', true)
-    .eq('active', true)
-    .eq('free', true)
+    .match({ register_complete: true, active: true, free: true })
 
   if (error) return { error: error.message }
 
@@ -25,7 +23,7 @@ export async function searchMostCloseDelivery (kitchenAddress: IAddress): Promis
   let shortestDistance = Infinity
 
   data.forEach(delivery => {
-    const distance: number = calculateHaversineDistance(kitchenAddress, delivery.current_location).kilometers
+    const distance: number = calculateHaversineDistance(kitchenAddress, delivery.current_location)
     if (distance < shortestDistance) {
       shortestDistance = distance
       closestDeliveryId = delivery.id
