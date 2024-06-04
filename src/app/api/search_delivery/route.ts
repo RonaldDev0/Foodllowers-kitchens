@@ -18,7 +18,7 @@ export async function POST (req: NextRequest) {
     .match({ register_complete: true, active: true, free: true })
     .then(({ data, error }) => {
       if (error) return { error }
-       if (data.length === 0) return { error: 'no delivery found' }
+      if (data.length === 0) return { error: 'no delivery found' }
 
       let closestDeliveryId = ''
       let shortestDistance = Infinity
@@ -38,7 +38,6 @@ export async function POST (req: NextRequest) {
     return NextResponse.json({ error, success: false })
   }
 
-
   // update order state
   const { error: updateOrderError } = await supabase
     .from('orders')
@@ -48,7 +47,6 @@ export async function POST (req: NextRequest) {
   if (updateOrderError) {
     return NextResponse.json({ error: updateOrderError, success: false })
   }
-
 
   // update delivery state
   const { error: updateDeliveryError } = await supabase
