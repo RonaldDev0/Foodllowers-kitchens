@@ -11,14 +11,30 @@ export interface Item {
 export function HistoryCard ({ item }: { item: Item }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
+  const date = new Date(item.created_at)
+    .toLocaleDateString('es-ES', {
+      month: 'long',
+      year: 'numeric',
+      day: 'numeric'
+    })
+
+  const amount = item.amount
+    .toLocaleString('es-Es', {
+      style: 'currency',
+      currency: 'COP',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+      useGrouping: true
+    })
+
   return (
     <>
       <Card className='w-full cursor-pointer h-14 my-2'>
         <CardBody onClick={onOpen} className='group hover:group-hover'>
           <div className='flex justify-between items-center'>
-            <p>{new Date(item.created_at).toLocaleDateString('es-ES')}</p>
+            <p>{date}</p>
             <div className='flex gap-4'>
-              <p>{item.amount.toLocaleString('es-Es', { style: 'currency', currency: 'COP' })}</p>
+              <p>{amount}</p>
               <ArrowRight size={28} className='opacity-0 group-hover:opacity-100 transition-all' />
             </div>
           </div>
@@ -32,8 +48,8 @@ export function HistoryCard ({ item }: { item: Item }) {
                 Detalles de las ganancias
               </ModalHeader>
               <ModalBody>
-                <p>{new Date(item.created_at).toLocaleDateString('es-ES')}</p>
-                <p>{item.amount.toLocaleString('es-Es', { style: 'currency', currency: 'COP' })}</p>
+                <p>{date}</p>
+                <p>{amount}</p>
               </ModalBody>
               <ModalFooter>
                 <Button color='secondary' onPress={onClose}>

@@ -30,7 +30,15 @@ export function Balance () {
     <div className='flex flex-col items-center'>
       <p className='font-semibold text-xl'>Balance</p>
       <p className='font-bold text-3xl'>
-        {balance.toLocaleString('es-Es', { style: 'currency', currency: 'COP' })}
+        {
+          balance.toLocaleString('es-Es', {
+            style: 'currency',
+            currency: 'COP',
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0,
+            useGrouping: true
+          })
+        }
       </p>
     </div>
   )

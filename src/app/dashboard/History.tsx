@@ -20,9 +20,8 @@ export function History () {
       .order('created_at', { ascending: false })
       .range(0, 10)
       .then(({ data, error }) => {
-        if (error) {
-          return
-        }
+        if (error) return
+
         setStore('balanceHistory', data)
         setStore('balanceFetched', true)
       })
