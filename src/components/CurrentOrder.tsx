@@ -50,8 +50,16 @@ export function CurrentOrder () {
           <div className='flex flex-col justify-around w-full py-2 gap-2'>
             <div className='flex justify-around'>
               <p className='text-large'>{currentOrder.product.name}</p>
-              <p className='text-green-600 text-large'>
-                ${currentOrder.product.price.toLocaleString()}
+              <p className='opacity-80'>
+                {
+                  currentOrder.product.price.toLocaleString('es-Es', {
+                    style: 'currency',
+                    currency: 'COP',
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 0,
+                    useGrouping: true
+                  })
+                }
               </p>
             </div>
             <div className='flex justify-around'>

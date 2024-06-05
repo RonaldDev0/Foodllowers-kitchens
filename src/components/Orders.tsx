@@ -78,8 +78,16 @@ export function Orders () {
                   <div className='flex flex-col justify-around w-full px-2'>
                     <div className='flex justify-around'>
                       <p>{order.product.name}</p>
-                      <p className='text-green-600'>
-                        ${order.product.price.toLocaleString()}
+                      <p className='opacity-80'>
+                        {
+                          order.product.price.toLocaleString('es-Es', {
+                            style: 'currency',
+                            currency: 'COP',
+                            minimumFractionDigits: 0,
+                            maximumFractionDigits: 0,
+                            useGrouping: true
+                          })
+                        }
                       </p>
                     </div>
                     <div className='flex gap-1 items-center'>
