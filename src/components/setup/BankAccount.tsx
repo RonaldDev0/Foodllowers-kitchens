@@ -61,9 +61,7 @@ export function BankAccount () {
   const [bankNumber, setBankNumber] = useState<string>('')
   const [bankNumberError, setBankNumberError] = useState<any>(null)
 
-  if (kitchen?.bank_account !== null) {
-    return
-  }
+  if (kitchen?.bank_account !== null) return null
 
   const handleChangeSelect = (e: any) => {
     setBank(e.target.value)

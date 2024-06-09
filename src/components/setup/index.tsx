@@ -2,13 +2,14 @@
 import { useEffect, useState } from 'react'
 import { Address } from './Address'
 import { useData } from '@/store'
+import { BankAccount } from './BankAccount'
 
 export function Setup () {
-  const { kitchenAddress } = useData()
+  const { kitchen } = useData()
   const [showAddressComponent, setShowAddressComponent] = useState(false)
 
   function handleValidation () {
-    if (!kitchenAddress) {
+    if (!kitchen.address) {
       setShowAddressComponent(true)
     }
   }
@@ -19,9 +20,12 @@ export function Setup () {
     }, 1000)
 
     return () => clearTimeout(timeout)
-  }, [kitchenAddress])
+  }, [kitchen])
 
   return (
-    showAddressComponent && <Address setShowAddressComponent={setShowAddressComponent} />
+    <>
+      {showAddressComponent && <Address setShowAddressComponent={setShowAddressComponent} />}
+      <BankAccount />
+    </>
   )
 }
