@@ -33,13 +33,13 @@ export function ProductCard ({ product }: { product: any }) {
         />
         <div className='p-4 flex justify-between items-center'>
           <div className='flex gap-3 items-center'>
-            <Avatar src={product.influencers.avatar} />
+            <Avatar src={product?.influencers?.avatar || null} />
             <div>
               <p className='text-xl'>
                 {product.name}
               </p>
               <p className='opacity-60'>
-                {product.influencers.full_name}
+                {product?.influencers?.full_name || 'unknown'}
               </p>
             </div>
           </div>
