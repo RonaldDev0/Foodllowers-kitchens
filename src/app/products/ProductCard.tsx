@@ -1,11 +1,13 @@
 import Image from 'next/image'
-import { Card, CardBody, Avatar, CardFooter, Switch } from '@nextui-org/react'
+import { Card, CardBody, Avatar, CardFooter, Switch, Button, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from '@nextui-org/react'
 import { useData } from '@/store'
 import { useSupabase } from '@/app/providers'
+import { Settings } from 'lucide-react'
 
 export function ProductCard ({ product }: { product: any }) {
   const { products, setStore } = useData()
   const { supabase } = useSupabase()
+
   const setKitchenState = (product: any) => {
     supabase
       .from('products')
@@ -21,9 +23,14 @@ export function ProductCard ({ product }: { product: any }) {
         }
       })
   }
+
+  function remove () {}
+
+  function onOpen () {}
+
   return (
     <Card key={product.id}>
-      <CardBody className='p-0'>
+      <CardBody className='p-0 group'>
         <Image
           src={product.preview}
           width='384'
@@ -31,6 +38,31 @@ export function ProductCard ({ product }: { product: any }) {
           alt='preview'
           className='w-96 h-[200px]'
         />
+        <Dropdown>
+          <DropdownTrigger>
+            <Button
+              color='primary'
+              variant='light'
+              size='sm'
+              className='absolute right-1 top-1 group-hover:opacity-100 opacity-0 transition-all'
+            >
+              <Settings size={25} />
+            </Button>
+          </DropdownTrigger>
+          <DropdownMenu aria-label='Static Actions'>
+            <DropdownItem key='edit' onPress={onOpen}>
+              Editar producto
+            </DropdownItem>
+            <DropdownItem
+              key='delete'
+              onClick={remove}
+              className='text-danger'
+              color='danger'
+            >
+              Borrar producto
+            </DropdownItem>
+          </DropdownMenu>
+        </Dropdown>
         <div className='p-4 flex justify-between items-center'>
           <div className='flex gap-3 items-center'>
             <Avatar src={product?.influencers?.avatar || null} />
@@ -39,7 +71,7 @@ export function ProductCard ({ product }: { product: any }) {
                 {product.name}
               </p>
               <p className='opacity-60'>
-                {product?.influencers?.full_name || 'unknown'}
+                {product?.influencers?.full_name || 'desconocido'}
               </p>
             </div>
           </div>
