@@ -10,10 +10,10 @@ export function ProductCard ({ product }: { product: any }) {
   const { supabase } = useSupabase()
   const { products, setStore } = useData()
 
-  const { isOpen: isOpenEdit, onOpen: onOpenEdit, onOpenChange: onOpenEditChange } = useDisclosure()
+  // const { isOpen: isOpenEdit, onOpen: onOpenEdit, onOpenChange: onOpenEditChange } = useDisclosure()
   const { isOpen: isOpenDelete, onOpen: onOpenDelete, onOpenChange: onOpenDeleteChange } = useDisclosure()
 
-  const [isLoadingEdit, setIsLoadingEdit] = useState(false)
+  // const [isLoadingEdit, setIsLoadingEdit] = useState(false)
   const [isLoadingDelete, setIsLoadingDelete] = useState(false)
 
   const setProductState = (product: any) => {
@@ -32,12 +32,12 @@ export function ProductCard ({ product }: { product: any }) {
       })
   }
 
-  function handleSubmitEdit (onClose: Function) {
-    setIsLoadingEdit(true)
+  // function handleSubmitEdit (onClose: Function) {
+  //   setIsLoadingEdit(true)
 
-    setIsLoadingEdit(false)
-    onClose()
-  }
+  //   setIsLoadingEdit(false)
+  //   onClose()
+  // }
 
   function handleSubmitDelete (onClose: Function) {
     setIsLoadingDelete(true)
@@ -82,12 +82,12 @@ export function ProductCard ({ product }: { product: any }) {
               </Button>
             </DropdownTrigger>
             <DropdownMenu aria-label='Static Actions'>
-              <DropdownItem
+              {/* <DropdownItem
                 key='edit'
                 onPress={onOpenEdit}
               >
                 Editar producto
-              </DropdownItem>
+              </DropdownItem> */}
               <DropdownItem
                 key='delete'
                 onClick={onOpenDelete}
@@ -136,7 +136,7 @@ export function ProductCard ({ product }: { product: any }) {
           </div>
         </CardFooter>
       </Card>
-      <Modal isOpen={isOpenEdit} onOpenChange={onOpenEditChange}>
+      {/* <Modal isOpen={isOpenEdit} onOpenChange={onOpenEditChange}>
         <ModalContent>
           {onClose => (
             <>
@@ -159,7 +159,7 @@ export function ProductCard ({ product }: { product: any }) {
             </>
           )}
         </ModalContent>
-      </Modal>
+      </Modal> */}
       <Modal isOpen={isOpenDelete} onOpenChange={onOpenDeleteChange}>
         <ModalContent>
           {onClose => (
