@@ -6,10 +6,12 @@ import { calculateHaversineDistance } from './calculateHaversineDistance'
 const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!)
 
 export async function POST (req: NextRequest) {
-  const { kitchenAddress, orderID } = await req.json()
-  if (!kitchenAddress || !orderID) {
-    return NextResponse.json({ error: 'kitchenAddress or orderID is missing' })
+  const { kitchenAddress, orderID, kitchenToken } = await req.json()
+  if (!kitchenAddress || !orderID || !kitchenToken) {
+    return NextResponse.json({ error: 'kitchenAddress or orderID or kitchenToken is missing' })
   }
+  // log as a kitchen
+  await supabase.auth.setSession(kitchenToken)
 
   // get delivery id
   const { delivery_id, error } = await supabase
