@@ -14,7 +14,7 @@ export function History () {
     }
 
     supabase
-      .from('transactions')
+      .from('earnings')
       .select('*')
       .eq('kitchen_id', kitchenId)
       .order('created_at', { ascending: false })
