@@ -2,7 +2,6 @@
 import { useEffect, useState } from 'react'
 import { Address } from './Address'
 import { useData } from '@/store'
-import { BankAccount } from './BankAccount'
 
 export function Setup () {
   const { kitchen } = useData()
@@ -25,7 +24,6 @@ export function Setup () {
   return (
     <>
       {showAddressComponent && <Address setShowAddressComponent={setShowAddressComponent} />}
-      <BankAccount />
     </>
   )
 }
