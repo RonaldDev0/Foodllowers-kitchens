@@ -28,7 +28,7 @@ const Context = createContext<SupabaseContext | undefined>(undefined)
 export function Providers ({ children }: { children: ReactNode }) {
   const [supabase] = useState(() => createPagesBrowserClient())
   const router = useRouter()
-  const { addOrder, setStore, orders, currentOrder } = useData()
+  const { addOrder, setStore, orders, currentOrder, kitchen } = useData()
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(() => router.refresh())
@@ -37,13 +37,27 @@ export function Providers ({ children }: { children: ReactNode }) {
   }, [router, supabase])
 
   useEffect(() => {
+    if (!kitchen) return
+    if (!kitchen.register_complete) {
+      switch (kitchen.register_step) {
+        case 'data_collection':
+          router.push('/register')
+          break
+        case 'data_validation':
+          router.push('/validation')
+          break
+      }
+    }
+  }, [kitchen])
+
+  useEffect(() => {
     supabase.auth.getSession()
       .then(({ data: { session } }: any) => {
         if (session) {
           setStore('user', session.user)
           supabase
             .from('kitchens')
-            .select('id, address, activation_code, bank_account')
+            .select('id, address, activation_code, bank_account, register_step, register_complete, chamber_of_commerce, health, phone_number')
             .eq('user_id', session.user.id)
             .then(({ data }) => {
               if (data?.length) {
