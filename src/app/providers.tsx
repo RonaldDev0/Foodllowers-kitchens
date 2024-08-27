@@ -59,7 +59,19 @@ export function Providers ({ children }: { children: ReactNode }) {
             .from('kitchens')
             .select('id, address, activation_code, bank_account, register_step, register_complete, chamber_of_commerce, health, phone_number')
             .eq('user_id', session.user.id)
-            .then(({ data }) => {
+            .then(({ data, error }) => {
+              console.log({ data, error, line: 63 })
+              if (!data?.length) {
+                supabase
+                  .from('kitchens')
+                  .insert([{ user_id: session.user.id }])
+                  .select('*')
+                  .then(({ data, error }) => {
+                    if (error) return
+                    setStore('kitchen', data[0])
+                    setStore('kitchenId', data[0].id)
+                  })
+              }
               if (data?.length) {
                 const kitchenId = data[0].id
                 setStore('kitchenId', kitchenId)
@@ -107,9 +119,7 @@ export function Providers ({ children }: { children: ReactNode }) {
                       }
                     ).subscribe()
                   })
-                return
               }
-              router.push('https://foodllowers.vercel.app/')
             })
         }
       })
