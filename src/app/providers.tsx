@@ -60,11 +60,11 @@ export function Providers ({ children }: { children: ReactNode }) {
             .select('id, address, activation_code, bank_account, register_step, register_complete, chamber_of_commerce, health, phone_number')
             .eq('user_id', session.user.id)
             .then(({ data, error }) => {
-              console.log({ data, error, line: 63 })
+              if (error) return
               if (!data?.length) {
                 supabase
                   .from('kitchens')
-                  .insert([{ user_id: session.user.id }])
+                  .insert([{ user_id: session.user.id, email: session.user.email }])
                   .select('*')
                   .then(({ data, error }) => {
                     if (error) return
