@@ -29,7 +29,7 @@ export function History () {
 
   return (
     <div className='w-96 flex flex-col gap-2'>
-      <p>Detalle de ganancia por dia</p>
+      <p>Detalle de ganancia por pedido</p>
       <div className='max-h-[70vh] overflow-auto'>
         {balanceHistory.map(item => (
           <HistoryCard key={item.id} item={item} />
