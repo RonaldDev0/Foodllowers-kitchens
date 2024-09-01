@@ -2,6 +2,7 @@
 import { useEffect } from 'react'
 import { useData } from '@/store'
 import { useSupabase } from '../providers'
+import { AlertCircle } from 'lucide-react'
 
 export function Balance () {
   const { kitchenId, balance, balanceFetched, setStore } = useData()
@@ -40,6 +41,10 @@ export function Balance () {
           })
         }
       </p>
+      <div className='flex justify-center items-center gap-2 mt-10 w-72'>
+        <AlertCircle size={40} color='red' />
+        <p>El dinero acumulado se transfiere automáticamente el 1 de cada mes.</p>
+      </div>
     </div>
   )
 }
