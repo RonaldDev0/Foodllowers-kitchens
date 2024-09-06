@@ -40,6 +40,18 @@ function validateForm (kitchen: any, termsAndConditions: boolean) {
     return { success: false, error: 'Ingresa el certificado de Sanidad antes de continuar' }
   } else if (!kitchen.bank_account) {
     return { success: false, error: 'Ingresa los datos de tu cuenta bancaria antes de continuar' }
+  } else if (!kitchen.bank_account.accountType) {
+    return { success: false, error: 'Selecciona tu tipo de cuenta bancaria antes de continuar' }
+  } else if (!kitchen.bank_account.bank) {
+    return { success: false, error: 'Selecciona tu entidad bancaria antes de continuar' }
+  } else if (!kitchen.bank_account.bankNumber) {
+    return { success: false, error: 'Ingresa tu número de cuenta bancaria antes de continuar' }
+  } else if (!kitchen.bank_account.ownerName) {
+    return { success: false, error: 'Ingresa el nombre del propietario de la cuenta bancaria antes de continuar' }
+  } else if (!kitchen.bank_account.ownerDocumentType) {
+    return { success: false, error: 'Selecciona tu tipo de documento antes de continuar' }
+  } else if (!kitchen.bank_account.ownerDocumentNumber) {
+    return { success: false, error: 'Ingresa tu número de documento antes de continuar' }
   } else if (!termsAndConditions) {
     return { success: false, error: 'Debes aceptar los terminos y condiciones antes de continuar' }
   }

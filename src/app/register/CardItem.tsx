@@ -13,15 +13,16 @@ export function CardItem ({ icon, title, component, tableReference }: IStep) {
   const [checked, setChecked] = useState(false)
 
   useEffect(() => {
-    if (!kitchen) {
-      return
-    }
+    if (!kitchen) return
 
-    if (tableReference === 'identification_card') {
+    if (tableReference === 'bank_account') {
       setChecked((
-        !!kitchen?.identification_card &&
-        !!kitchen?.identification_card_front &&
-        !!kitchen?.identification_card_back
+        !!kitchen?.bank_account?.accountType &&
+        !!kitchen?.bank_account?.bank &&
+        !!kitchen?.bank_account?.bankNumber &&
+        !!kitchen?.bank_account?.ownerName &&
+        !!kitchen?.bank_account?.ownerDocumentType &&
+        !!kitchen?.bank_account?.ownerDocumentNumber
       ))
       return
     }
