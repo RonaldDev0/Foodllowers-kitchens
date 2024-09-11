@@ -13,6 +13,9 @@ module.exports = withPWA({
     },
     {
       hostname: 'gtsjuxikwdifunrkhpyp.supabase.co'
+    },
+    {
+      hostname: 'hfwnpordiopqstqizktp.supabase.co'
     }]
   }
 })
