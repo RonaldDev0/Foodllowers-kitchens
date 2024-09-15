@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 
 export interface order {
+  preferences: string | null
   id: any
   invoice_id: string
   payment_status: string

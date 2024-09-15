@@ -53,6 +53,12 @@ export function CurrentOrder () {
               <p className='font-bold text-lg'>{currentOrder.invoice_id.slice(6, 10)}</p>
             </div>
           </div>
+          <div className='flex gap-3 mb-2'>
+            <p>Nota:</p>
+            <p className='text-purple-600'>
+              {currentOrder.preferences || 'No hay preferencias'}
+            </p>
+          </div>
           <Image
             src={currentOrder.product.preview}
             width='200'

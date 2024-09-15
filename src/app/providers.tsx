@@ -80,7 +80,7 @@ export function Providers ({ children }: { children: ReactNode }) {
                 setStore('kitchen', data[0])
                 supabase
                   .from('orders')
-                  .select('id, order_state, invoice_id, product')
+                  .select('id, order_state, invoice_id, product, preferences')
                   .eq('kitchen_id', kitchenId)
                   .eq('payment_status', 'approved')
                   .in('order_state', ['buscando cocina...', 'cocinando...'])
@@ -107,7 +107,7 @@ export function Providers ({ children }: { children: ReactNode }) {
 
                           supabase
                             .from('orders')
-                            .select('id, order_state, invoice_id, product')
+                            .select('id, order_state, invoice_id, product, preferences')
                             .eq('kitchen_id', kitchenId)
                             .eq('payment_status', 'approved')
                             .in('order_state', ['buscando cocina...', 'cocinando...'])
