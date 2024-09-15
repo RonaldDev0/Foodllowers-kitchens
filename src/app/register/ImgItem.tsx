@@ -26,9 +26,8 @@ export function ImgItem ({ label, value, setValue, bucketPath, nullTableValue, t
       .from('kitchens')
       .remove([kitchen[tablePath]])
       .then(({ error }) => {
-        if (error) {
-          return
-        }
+        if (error) return
+
         setValue(null)
         supabase
           .from('kitchens')
@@ -36,9 +35,8 @@ export function ImgItem ({ label, value, setValue, bucketPath, nullTableValue, t
           .eq('id', kitchenId)
           .select()
           .then(({ data, error }) => {
-            if (error) {
-              return
-            }
+            if (error) return
+
             setStore('kitchen', data[0])
           })
       })
@@ -59,9 +57,7 @@ export function ImgItem ({ label, value, setValue, bucketPath, nullTableValue, t
         .from('kitchens')
         .upload(bucket, file)
         .then(({ data, error }: any) => {
-          if (error || !data.path) {
-            return
-          }
+          if (error || !data.path) return
 
           supabase
             .from('kitchens')
@@ -69,9 +65,8 @@ export function ImgItem ({ label, value, setValue, bucketPath, nullTableValue, t
             .eq('id', kitchenId)
             .select()
             .then(({ error, data: res }) => {
-              if (error) {
-                return
-              }
+              if (error) return
+
               setStore('kitchen', res[0])
               const { data: { publicUrl } } = supabase
                 .storage
