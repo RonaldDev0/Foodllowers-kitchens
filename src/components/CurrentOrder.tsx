@@ -1,44 +1,29 @@
-/* eslint-disable camelcase */
 'use client'
 import { useData } from '@/store'
 import { Card, CardHeader, CardBody, CardFooter, Button, Avatar, useDisclosure, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Accordion, AccordionItem, Checkbox } from '@nextui-org/react'
 import Image from 'next/image'
-import { useState, useEffect } from 'react'
 import { useSupabase } from '@/app/providers'
 import { X, Info } from 'lucide-react'
 
 export function CurrentOrder () {
-  const { currentOrder, kitchenAddress, setStore } = useData()
-  const [isLoading, setIsLoading] = useState(false)
+  const { currentOrder, pendingDeliveryAssignmentOrders, setStore } = useData()
   const { supabase } = useSupabase()
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
-  const [token, setToken] = useState<object>({})
-
   const finishOrder = () => {
     if (!currentOrder) return
 
-    setIsLoading(true)
-    fetch('/api/search_delivery', {
-      method: 'POST',
-      body: JSON.stringify({ kitchenAddress: kitchenAddress.geometry.location, orderID: currentOrder.id, kitchenToken: token })
-    })
-      .then(res => res.json())
+    supabase
+      .from('orders')
+      .update({ order_state: 'buscando delivery...' })
+      .eq('id', currentOrder.id)
       .then(({ error }) => {
-        setIsLoading(false)
         if (error) return
+        setStore('pendingDeliveryAssignmentOrders', [...pendingDeliveryAssignmentOrders, currentOrder])
         setStore('currentOrder', null)
       })
   }
-
-  useEffect(() => {
-    supabase.auth.getSession()
-      .then(({ data }) => {
-        const { access_token, refresh_token } = data.session!
-        setToken({ access_token, refresh_token })
-      })
-  }, [])
 
   if (!currentOrder) return null
 
@@ -103,7 +88,6 @@ export function CurrentOrder () {
               color='secondary'
               className='w-full'
               onPress={finishOrder}
-              isDisabled={isLoading}
             >
               Terminar Pedido
             </Button>
