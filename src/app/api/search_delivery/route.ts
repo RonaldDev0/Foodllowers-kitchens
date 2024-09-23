@@ -20,7 +20,7 @@ export async function POST (req: NextRequest) {
     .match({ register_complete: true, active: true, free: true })
     .then(({ data, error }) => {
       if (error) return { error }
-      if (data.length === 0) return { error: 'no delivery found' }
+      if (data.length === 0) return { error: 'no se encontraron deliverys disponibles' }
 
       let closestDeliveryId = ''
       let shortestDistance = Infinity
@@ -60,5 +60,5 @@ export async function POST (req: NextRequest) {
     return NextResponse.json({ error: updateDeliveryError, success: false })
   }
 
-  return NextResponse.json({ error: false })
+  return NextResponse.json({ error: false, data: { delivery_id, orderID } })
 }

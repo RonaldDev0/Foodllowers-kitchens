@@ -28,7 +28,42 @@ const Context = createContext<SupabaseContext | undefined>(undefined)
 export function Providers ({ children }: { children: ReactNode }) {
   const [supabase] = useState(() => createPagesBrowserClient())
   const router = useRouter()
-  const { addOrder, setStore, orders, currentOrder, kitchen } = useData()
+  const { addOrder, setStore, orders, currentOrder, kitchen, pendingDeliveryAssignmentOrders, kitchenAddress } = useData()
+
+  const [isFirstTime, setIsFirstTime] = useState(true)
+  const [token, setToken] = useState<object>({})
+
+  function assignmentOrders () {
+    pendingDeliveryAssignmentOrders.forEach(async ({ id }) => {
+      await fetch('/api/search_delivery', {
+        cache: 'no-cache',
+        method: 'POST',
+        body: JSON.stringify({ kitchenAddress: kitchenAddress.geometry.location, orderID: id, kitchenToken: token })
+      })
+        .then(res => res.json())
+        .then(({ error, data }) => {
+          if (error) return
+
+          setStore('pendingDeliveryAssignmentOrders', pendingDeliveryAssignmentOrders.filter(order => order.id !== data.orderID))
+        })
+    })
+  }
+
+  useEffect(() => {
+    if (!kitchen || !pendingDeliveryAssignmentOrders.length) return
+
+    if (isFirstTime) {
+      setIsFirstTime(false)
+      assignmentOrders()
+      return
+    }
+
+    const intervalId = setInterval(() => {
+      assignmentOrders()
+    }, 1000)
+
+    return () => clearInterval(intervalId)
+  }, [pendingDeliveryAssignmentOrders])
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(() => router.refresh())
@@ -54,6 +89,7 @@ export function Providers ({ children }: { children: ReactNode }) {
     supabase.auth.getSession()
       .then(({ data: { session } }: any) => {
         if (session) {
+          setToken({ access_token: session.access_token, refresh_token: session.refresh_token })
           setStore('user', session.user)
           supabase
             .from('kitchens')
@@ -80,11 +116,12 @@ export function Providers ({ children }: { children: ReactNode }) {
                 setStore('kitchen', data[0])
                 supabase
                   .from('orders')
-                  .select('id, order_state, invoice_id, product, preferences')
+                  .select('id, order_state, invoice_id, product, preferences, delivery_id')
                   .eq('kitchen_id', kitchenId)
                   .eq('payment_status', 'approved')
-                  .in('order_state', ['buscando cocina...', 'cocinando...'])
+                  .in('order_state', ['buscando cocina...', 'cocinando...', 'buscando delivery...'])
                   .then(({ data }) => {
+                    setStore('pendingDeliveryAssignmentOrders', data?.filter(order => order.order_state === 'buscando delivery...' && order.delivery_id === null))
                     setStore('orders', data?.filter(order => order.order_state === 'buscando cocina...'))
                     setStore('currentOrder', data?.filter(order => order.order_state === 'cocinando...')[0])
                     supabase.channel('orders').on(
@@ -107,11 +144,12 @@ export function Providers ({ children }: { children: ReactNode }) {
 
                           supabase
                             .from('orders')
-                            .select('id, order_state, invoice_id, product, preferences')
+                            .select('id, order_state, invoice_id, product, preferences, delivery_id')
                             .eq('kitchen_id', kitchenId)
                             .eq('payment_status', 'approved')
-                            .in('order_state', ['buscando cocina...', 'cocinando...'])
+                            .in('order_state', ['buscando cocina...', 'cocinando...', 'buscando delivery...'])
                             .then(({ data }) => {
+                              setStore('pendingDeliveryAssignmentOrders', data?.filter(order => order.order_state === 'buscando delivery...' && order.delivery_id === null))
                               setStore('orders', data?.filter(order => order.order_state === 'buscando cocina...'))
                               setStore('currentOrder', data?.filter(order => order.order_state === 'cocinando...')[0])
                             })

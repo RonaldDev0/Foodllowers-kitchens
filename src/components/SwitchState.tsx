@@ -6,11 +6,16 @@ import { useEffect } from 'react'
 
 export function SwitchState () {
   const { supabase } = useSupabase()
-  const { user, active, currentOrder, orders, setStore } = useData()
+  const { user, active, currentOrder, orders, pendingDeliveryAssignmentOrders, setStore } = useData()
 
   const setKitchenState = () => {
     if (currentOrder || orders?.length) {
       alert('no puedes cambiar el estado de la cocina mientras estás cocinando')
+      return
+    }
+
+    if (pendingDeliveryAssignmentOrders?.length) {
+      alert('no puedes cambiar el estado de la cocina mientras hay pedidos pendientes')
       return
     }
 
