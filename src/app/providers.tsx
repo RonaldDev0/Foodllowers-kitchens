@@ -60,7 +60,7 @@ export function Providers ({ children }: { children: ReactNode }) {
 
     const intervalId = setInterval(() => {
       assignmentOrders()
-    }, 1000)
+    }, 6 * 60 * 1000)
 
     return () => clearInterval(intervalId)
   }, [pendingDeliveryAssignmentOrders])
