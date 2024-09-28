@@ -1,15 +1,17 @@
 'use client'
 import { useData } from '@/store'
-import { Card, CardHeader, CardBody, CardFooter, Button, Avatar, useDisclosure, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Accordion, AccordionItem, Checkbox } from '@nextui-org/react'
+import { Card, CardHeader, CardBody, CardFooter, Button, Avatar, useDisclosure, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Accordion, AccordionItem, Checkbox, Pagination } from '@nextui-org/react'
 import Image from 'next/image'
 import { useSupabase } from '@/app/providers'
 import { X, Info } from 'lucide-react'
+import { useState } from 'react'
 
 export function CurrentOrder () {
   const { currentOrder, pendingDeliveryAssignmentOrders, setStore } = useData()
   const { supabase } = useSupabase()
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
+  const [page, setPage] = useState(0)
 
   const finishOrder = () => {
     if (!currentOrder) return
@@ -30,18 +32,26 @@ export function CurrentOrder () {
   return (
     <>
       <div className='[@media(min-width:1000px)]:w-[24vw] [@media(max-width:800px)]:w-96]'>
+        <p className='font-semibold mb-2 text-large'>
+          Pedido en preparación:
+        </p>
         <Card>
-          <CardHeader className='pb-0'>
-            Pedido en preparación:
-          </CardHeader>
-          <CardBody>
-            <div className='flex gap-3 mb-2'>
+          <CardHeader className='pb-0 flex flex-col gap-2 items-start'>
+            <div className='flex gap-3'>
               <p>Numero de factura:</p>
               <div className='flex justify-center items-center'>
                 <p>{currentOrder.invoice_id.slice(0, 6)}-</p>
                 <p className='font-bold text-lg'>{currentOrder.invoice_id.slice(6, 10)}</p>
               </div>
             </div>
+            <div className='flex gap-2'>
+              <p>cantidad de hamburguesas:</p>
+              <p className='text-purple-800 font-bold'>
+                {currentOrder.preferences.length}
+              </p>
+            </div>
+          </CardHeader>
+          <CardBody>
             <div className='mb-2 text-purple-800 flex items-center gap-2 cursor-pointer' onClick={onOpen}>
               <Info size={20} />
               <p>
@@ -102,14 +112,14 @@ export function CurrentOrder () {
                 ¡Tu Sorpresa Gastronómica!
               </ModalHeader>
               <ModalBody>
-                <div className='flex flex-col gap-12'>
+                <div className='flex flex-col gap-6'>
                   <div className='flex gap-3 items-center text-sm'>
                     <Info size={40} />
                     <p>Estos son los ingredietes que el cliente ha seleccionado para su pedido:</p>
                   </div>
                   <div>
                     <Accordion>
-                      {currentOrder.preferences.map(({ category, items }: any) => (
+                      {currentOrder.preferences[page].map(({ category, items }: any) => (
                         <AccordionItem key={category} aria-label={category} title={category}>
                           <div className='flex flex-col'>
                             {items.map(({ name, checked }: any) => (
@@ -127,6 +137,13 @@ export function CurrentOrder () {
                         </AccordionItem>
                       ))}
                     </Accordion>
+                  </div>
+                  <div className='w-fll flex justify-center'>
+                    <Pagination
+                      page={page + 1}
+                      onChange={e => setPage(e - 1)}
+                      total={currentOrder.preferences.length}
+                    />
                   </div>
                 </div>
               </ModalBody>
