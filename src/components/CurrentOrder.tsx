@@ -70,7 +70,7 @@ export function CurrentOrder () {
                 <p className='text-large'>{currentOrder.product.name}</p>
                 <p className='opacity-80'>
                   {
-                    currentOrder.product.price.toLocaleString('es-Es', {
+                    currentOrder.transaction_amount.kitchen.toLocaleString('es-Es', {
                       style: 'currency',
                       currency: 'COP',
                       minimumFractionDigits: 0,

@@ -80,7 +80,7 @@ export function Orders () {
                       <p>{order.product.name}</p>
                       <p className='opacity-80'>
                         {
-                          order.product.price.toLocaleString('es-Es', {
+                          order.transaction_amount.kitchen.toLocaleString('es-Es', {
                             style: 'currency',
                             currency: 'COP',
                             minimumFractionDigits: 0,
