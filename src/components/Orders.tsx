@@ -90,6 +90,9 @@ export function Orders () {
                         }
                       </p>
                     </div>
+                    <div className='ml-3'>
+                      <p>x{order.preferences.length}</p>
+                    </div>
                     <div className='flex gap-1 items-center'>
                       <Avatar src={order.product.influencers.avatar} />
                       <p className='opacity-80'>

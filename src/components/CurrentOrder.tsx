@@ -1,6 +1,6 @@
 'use client'
 import { useData } from '@/store'
-import { Card, CardHeader, CardBody, CardFooter, Button, Avatar, useDisclosure, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Accordion, AccordionItem, Checkbox, Pagination } from '@nextui-org/react'
+import { Card, CardHeader, CardBody, CardFooter, Button, Avatar, useDisclosure, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Accordion, AccordionItem, Checkbox, Pagination, Chip } from '@nextui-org/react'
 import Image from 'next/image'
 import { useSupabase } from '@/app/providers'
 import { X, Info } from 'lucide-react'
@@ -119,23 +119,38 @@ export function CurrentOrder () {
                   </div>
                   <div>
                     <Accordion>
-                      {currentOrder.preferences[page].map(({ category, items }: any) => (
-                        <AccordionItem key={category} aria-label={category} title={category}>
-                          <div className='flex flex-col'>
-                            {items.map(({ name, checked }: any) => (
-                              <Checkbox
-                                key={name}
-                                color='danger'
-                                lineThrough
-                                icon={<X size={20} />}
-                                isSelected={checked}
-                              >
-                                {name}
-                              </Checkbox>
-                            ))}
-                          </div>
-                        </AccordionItem>
-                      ))}
+                      {currentOrder.preferences[page]?.categories
+                        .filter(({ category }: any) => !(category === 'Acompañantes' || category === 'Bebidas') || currentOrder.preferences[page].isCombo)
+                        .map(({ category, items }: any) => (
+                          <AccordionItem
+                            key={category}
+                            aria-label={category}
+                            title={(
+                              <div className='flex justify-between'>
+                                <p>{category}</p>
+                                {currentOrder.preferences[page].isCombo && (category === 'Bebidas' || category === 'Acompañantes') && (
+                                  <Chip size='sm' color='primary'>
+                                    combo
+                                  </Chip>
+                                )}
+                              </div>
+                            )}
+                          >
+                            <div className='flex flex-col'>
+                              {items.map(({ name, checked }: any) => (
+                                <Checkbox
+                                  key={name}
+                                  color='danger'
+                                  lineThrough
+                                  icon={<X size={20} />}
+                                  isSelected={checked}
+                                >
+                                  {name}
+                                </Checkbox>
+                              ))}
+                            </div>
+                          </AccordionItem>
+                        ))}
                     </Accordion>
                   </div>
                   <div className='w-fll flex justify-center'>
