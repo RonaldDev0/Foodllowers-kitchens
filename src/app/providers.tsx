@@ -139,7 +139,7 @@ export function Providers ({ children }: { children: ReactNode }) {
                           return
                         }
                         if (payload.eventType === 'INSERT' || payload.eventType === 'UPDATE') {
-                          if (payload.eventType === 'INSERT' && payload.new.payment_status === 'approved') setStore('soundAlert', true)
+                          if (payload.new.payment_status === 'approved') setStore('soundAlert', true)
                           if (payload.new.product && payload.new.payment_status === 'approved') return addOrder(payload.new)
 
                           supabase
