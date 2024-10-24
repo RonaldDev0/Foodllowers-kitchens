@@ -8,7 +8,7 @@ import Image from 'next/image'
 
 export function Orders () {
   const { supabase } = useSupabase()
-  const { orders, kitchenId, setStore, deleteOrder } = useData()
+  const { orders, setStore, deleteOrder } = useData()
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
   const [alert, setAlert] = useState<string | null>(null)
@@ -16,25 +16,14 @@ export function Orders () {
   function acceptOrder (order: any) {
     supabase
       .from('orders')
-      .select('id')
-      .eq('kitchen_id', kitchenId)
-      .eq('order_state', 'cocinando...')
+      .update({ order_state: 'cocinando...' })
+      .eq('id', order.id)
+      .select()
       .then(({ data }) => {
-        if (!data?.length) {
-          supabase
-            .from('orders')
-            .update({ order_state: 'cocinando...' })
-            .eq('id', order.id)
-            .select()
-            .then(({ data }) => {
-              if (data?.length) {
-                deleteOrder(data[0].id)
-                setStore('currentOrder', data[0])
-              }
-            })
-          return
+        if (data?.length) {
+          deleteOrder(data[0].id)
+          setStore('currentOrders', data)
         }
-        setAlert('No puedes preparar mas de 1 orden a la vez')
       })
   }
 
@@ -54,13 +43,7 @@ export function Orders () {
         <p className='font-semibold mb-2 text-large'>
           Pendientes: {orders.length}
         </p>
-        <div className='
-          [@media(min-width:800px)]:grid
-          [@media(min-width:800px)]:grid-cols-2
-          [@media(max-width:800px)]:flex
-          [@media(max-width:800px)]:flex-col
-          gap-4 max-h-[70vh] overflow-auto'
-        >
+        <div className='flex flex-wrap gap-4 [@media(min-width:800px)]:max-w-[62vw] [@media(max-width:800px)]:w-80 overflow-auto'>
           {orders.map((order, index) => (
             <Card key={order.id} className='w-96 h-min'>
               <CardBody className='p-0'>

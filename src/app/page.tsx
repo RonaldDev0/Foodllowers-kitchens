@@ -1,7 +1,7 @@
 'use client'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect } from 'react'
-import { Orders, CurrentOrder, ActivationCode, Setup, SwitchState } from '@/components'
+import { Orders, CurrentOrders, ActivationCode, Setup, SwitchState } from '@/components'
 
 export default function Home () {
   const loginCode = useSearchParams().get('code')
@@ -17,8 +17,8 @@ export default function Home () {
       <Setup />
       <SwitchState />
       <ActivationCode />
-      <div className='flex [@media(max-width:800px)]:flex-col gap-16 mt-16'>
-        <CurrentOrder />
+      <div className='flex flex-col gap-16 mt-16'>
+        <CurrentOrders />
         <Orders />
       </div>
     </main>

@@ -42,7 +42,7 @@ interface State {
     id: any
     product: any
   } | null
-  currentOrder: order | null
+  currentOrders: order[] | null
   orders: order[]
   pendingDeliveryAssignmentOrders: any[]
 }
@@ -67,7 +67,7 @@ export const useData = create<State & Actions>(set => ({
   user: null,
   active: null,
   shipments: null,
-  currentOrder: null,
+  currentOrders: [],
   orders: [],
   pendingDeliveryAssignmentOrders: [],
   setStore: (property, value) => set(prev => ({ ...prev, [property]: value })),
