@@ -28,7 +28,7 @@ const Context = createContext<SupabaseContext | undefined>(undefined)
 export function Providers ({ children }: { children: ReactNode }) {
   const [supabase] = useState(() => createPagesBrowserClient())
   const router = useRouter()
-  const { addOrder, setStore, orders, currentOrder, kitchen, pendingDeliveryAssignmentOrders, kitchenAddress } = useData()
+  const { addOrder, setStore, orders, currentOrders, kitchen, pendingDeliveryAssignmentOrders, kitchenAddress } = useData()
 
   const [isFirstTime, setIsFirstTime] = useState(true)
   const [token, setToken] = useState<object>({})
@@ -123,7 +123,7 @@ export function Providers ({ children }: { children: ReactNode }) {
                   .then(({ data }) => {
                     setStore('pendingDeliveryAssignmentOrders', data?.filter(order => order.order_state === 'buscando delivery...' && order.delivery_id === null))
                     setStore('orders', data?.filter(order => order.order_state === 'buscando cocina...'))
-                    setStore('currentOrder', data?.filter(order => order.order_state === 'cocinando...')[0])
+                    setStore('currentOrders', data?.filter(order => order.order_state === 'cocinando...'))
                     supabase.channel('orders').on(
                       'postgres_changes',
                       {
@@ -135,11 +135,11 @@ export function Providers ({ children }: { children: ReactNode }) {
                       (payload: any) => {
                         if (payload.eventType === 'DELETE') {
                           setStore('orders', orders?.filter(order => order.id !== payload.new.id))
-                          setStore('currentOrder', currentOrder?.id === payload.new.id ? null : currentOrder)
+                          setStore('currentOrders', currentOrders?.filter(order => order.id !== payload.new.id))
                           return
                         }
                         if (payload.eventType === 'INSERT' || payload.eventType === 'UPDATE') {
-                          if (payload.new.payment_status === 'approved') setStore('soundAlert', true)
+                          if (payload.new.payment_status === 'approved' && payload.eventType === 'INSERT') setStore('soundAlert', true)
                           if (payload.new.product && payload.new.payment_status === 'approved') return addOrder(payload.new)
 
                           supabase
@@ -151,7 +151,7 @@ export function Providers ({ children }: { children: ReactNode }) {
                             .then(({ data }) => {
                               setStore('pendingDeliveryAssignmentOrders', data?.filter(order => order.order_state === 'buscando delivery...' && order.delivery_id === null))
                               setStore('orders', data?.filter(order => order.order_state === 'buscando cocina...'))
-                              setStore('currentOrder', data?.filter(order => order.order_state === 'cocinando...')[0])
+                              setStore('currentOrders', data?.filter(order => order.order_state === 'cocinando...'))
                             })
                         }
                       }
