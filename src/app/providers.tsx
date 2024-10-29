@@ -116,12 +116,12 @@ export function Providers ({ children }: { children: ReactNode }) {
                 setStore('kitchen', data[0])
                 supabase
                   .from('orders')
-                  .select('id, order_state, invoice_id, product, preferences, delivery_id, transaction_amount')
+                  .select('id, order_state, invoice_id, product, preferences, delivery_id, transaction_amount, pickUpInStore')
                   .eq('kitchen_id', kitchenId)
                   .eq('payment_status', 'approved')
                   .in('order_state', ['buscando cocina...', 'cocinando...', 'buscando delivery...'])
                   .then(({ data }) => {
-                    setStore('pendingDeliveryAssignmentOrders', data?.filter(order => order.order_state === 'buscando delivery...' && order.delivery_id === null))
+                    setStore('pendingDeliveryAssignmentOrders', data?.filter(order => order.order_state === 'buscando delivery...' && order.delivery_id === null && order.pickUpInStore === false))
                     setStore('orders', data?.filter(order => order.order_state === 'buscando cocina...'))
                     setStore('currentOrders', data?.filter(order => order.order_state === 'cocinando...'))
                     supabase.channel('orders').on(
@@ -144,12 +144,12 @@ export function Providers ({ children }: { children: ReactNode }) {
 
                           supabase
                             .from('orders')
-                            .select('id, order_state, invoice_id, product, preferences, delivery_id, transaction_amount')
+                            .select('id, order_state, invoice_id, product, preferences, delivery_id, transaction_amount, pickUpInStore')
                             .eq('kitchen_id', kitchenId)
                             .eq('payment_status', 'approved')
                             .in('order_state', ['buscando cocina...', 'cocinando...', 'buscando delivery...'])
                             .then(({ data }) => {
-                              setStore('pendingDeliveryAssignmentOrders', data?.filter(order => order.order_state === 'buscando delivery...' && order.delivery_id === null))
+                              setStore('pendingDeliveryAssignmentOrders', data?.filter(order => order.order_state === 'buscando delivery...' && order.delivery_id === null && order.pickUpInStore === false))
                               setStore('orders', data?.filter(order => order.order_state === 'buscando cocina...'))
                               setStore('currentOrders', data?.filter(order => order.order_state === 'cocinando...'))
                             })
