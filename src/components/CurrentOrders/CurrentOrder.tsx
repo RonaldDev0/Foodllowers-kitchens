@@ -22,13 +22,18 @@ export function CurrentOrder ({ currentOrder }: { currentOrder: any }) {
       .eq('id', currentOrder.id)
       .then(({ error }) => {
         if (error) return
-        setStore('pendingDeliveryAssignmentOrders', [...pendingDeliveryAssignmentOrders, currentOrder])
         setStore('currentOrders', currentOrders?.filter(order => order.id !== currentOrder.id))
+        if (!currentOrder.pickUpInStore) {
+          setStore('pendingDeliveryAssignmentOrders', [...pendingDeliveryAssignmentOrders, currentOrder])
+        }
       })
 
     supabase
       .from('earnings')
-      .insert([{ shipment_id: currentOrder.id, kitchen_id: kitchenId, amount: currentOrder.transaction_amount.kitchen, transaction_type: 'payment to kitchen' }])
+      .insert([
+        { shipment_id: currentOrder.id, influencer_id: currentOrder.product.id_influencer, amount: currentOrder.transaction_amount.influencer, transaction_type: 'payment to influencer' },
+        { shipment_id: currentOrder.id, kitchen_id: kitchenId, amount: currentOrder.transaction_amount.kitchen, transaction_type: 'payment to kitchen' }
+      ])
       .then(({ error }) => {
         if (error) return
 
@@ -61,6 +66,21 @@ export function CurrentOrder ({ currentOrder }: { currentOrder: any }) {
               .eq('id', kitchenId)
               .then(() => {})
           })
+
+        supabase
+          .from('influencers')
+          .select('balance')
+          .eq('id', currentOrder.product.id_influencer)
+          .single()
+          .then(({ data, error }) => {
+            if (error) return
+
+            supabase
+              .from('influencers')
+              .update({ balance: data.balance + currentOrder.transaction_amount.influencer })
+              .eq('id', currentOrder.product.id_influencer)
+              .then(() => {})
+          })
       })
   }
 
@@ -69,7 +89,7 @@ export function CurrentOrder ({ currentOrder }: { currentOrder: any }) {
   return (
     <>
       <Card>
-        <CardHeader className='pb-0 flex flex-col gap-2 items-start'>
+        <CardHeader className='pb-0 flex flex-col items-start'>
           <div className='flex gap-3'>
             <p>Numero de factura:</p>
             <div className='flex justify-center items-center'>
@@ -83,6 +103,13 @@ export function CurrentOrder ({ currentOrder }: { currentOrder: any }) {
               {currentOrder.preferences.length}
             </p>
           </div>
+          {currentOrder.pickUpInStore && (
+            <div>
+              <p className='text-purple-800 font-bold'>
+                lo reclama el cliente
+              </p>
+            </div>
+          )}
         </CardHeader>
         <CardBody>
           <div className='mb-2 text-purple-800 flex items-center gap-2 cursor-pointer' onClick={onOpen}>
