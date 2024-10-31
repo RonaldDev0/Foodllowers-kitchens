@@ -91,10 +91,10 @@ export function CurrentOrder ({ currentOrder }: { currentOrder: any }) {
       <Card>
         <CardHeader className='pb-0 flex flex-col items-start'>
           <div className='flex gap-3'>
-            <p>Numero de factura:</p>
+            <p>Factura:</p>
             <div className='flex justify-center items-center'>
-              <p>{currentOrder.invoice_id.slice(0, 6)}-</p>
-              <p className='font-bold text-lg'>{currentOrder.invoice_id.slice(6, 10)}</p>
+              <p>{currentOrder.invoice_id.slice(0, -3)}-</p>
+              <p className='font-bold text-lg'>{currentOrder.invoice_id.slice(-3)}</p>
             </div>
           </div>
           <div className='flex gap-2'>
@@ -168,7 +168,13 @@ export function CurrentOrder ({ currentOrder }: { currentOrder: any }) {
           {onClose => (
             <>
               <ModalHeader className='flex justify-center'>
-                ¡Tu Sorpresa Gastronómica!
+                <div className='flex gap-3'>
+                  <p>Factura:</p>
+                  <div className='flex justify-center items-center'>
+                    <p>{currentOrder.invoice_id.slice(0, -3)}-</p>
+                    <p className='font-bold text-lg'>{currentOrder.invoice_id.slice(-3)}</p>
+                  </div>
+                </div>
               </ModalHeader>
               <ModalBody>
                 <div className='flex flex-col gap-6'>
