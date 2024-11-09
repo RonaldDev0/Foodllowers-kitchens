@@ -1,20 +1,31 @@
 'use client'
 import Image from 'next/image'
-import { Button, Card, CardHeader, CardBody, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure } from '@nextui-org/react'
+import { Button, Card, CardHeader, CardBody, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Checkbox } from '@nextui-org/react'
 import { useSupabase } from '../providers'
 import { ClipboardList } from 'lucide-react'
+import { useState } from 'react'
+
+export const revalidate = 7 * 24 * 60 * 60
 
 export default function Login () {
   const { supabase } = useSupabase()
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
+  const { isOpen: isOpenModal, onOpen: onOpenModal, onOpenChange: onOpenChangeModal } = useDisclosure()
 
-  const Login = async () => await supabase
-    .auth
-    .signInWithOAuth(
-      {
+  const [checked, setChecked] = useState(false)
+
+  function login () {
+    if (!checked) {
+      onOpenModal()
+      return
+    }
+
+    supabase.auth
+      .signInWithOAuth({
         provider: 'google'
-      }
-    )
+        // options: { redirectTo: window.location.origin + '/api/auth/callback' }
+      })
+  }
 
   return (
     <main className='h-screen flex justify-center items-center'>
@@ -33,7 +44,7 @@ export default function Login () {
         </CardHeader>
         <CardBody className='justify-center items-center flex flex-col gap-6'>
           <Button
-            onPress={Login}
+            onPress={() => login()}
             className='flex justify-center items-center gap-2 w-80 py-6 text-lg bg-zinc-950'
           >
             <Image
@@ -46,9 +57,10 @@ export default function Login () {
               Continuar con Google
             </p>
           </Button>
-          <div>
+          <div className='flex justify-center items-center gap-2'>
+            <Checkbox isSelected={checked} onChange={() => setChecked(!checked)} />
             <p className='text-purple-500 cursor-pointer' onClick={onOpen}>
-              Al continuar estas aceptando los <br /> Terminos y Condiciones de Uso
+              Terminos y Condiciones de Uso
             </p>
           </div>
           <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
@@ -75,7 +87,7 @@ export default function Login () {
                       La app de Foodllowers para cocinas ocultas debe ser utilizada exclusivamente para gestionar pedidos y promociones asociadas a la plataforma. <br /><br /> Cualquier uso no autorizado puede llevar a la terminación del contrato con Foodllowers. <br /><br />
 
                       <b>4. Políticas de Pago:</b> <br /><br />
-                      Foodllowers realizará pagos a las cocinas ocultas mensualmente, tras la verificación de todas las transacciones realizadas. <br /><br /> Las cocinas deben revisar los pedidos y reportar cualquier discrepancia en un plazo no mayor a 48 horas. <br /><br />
+                      Foodllowers realizará pagos a las cocinas ocultas semanalmente, tras la verificación de todas las transacciones realizadas. <br /><br /> Las cocinas deben revisar los pedidos y reportar cualquier discrepancia en un plazo no mayor a 48 horas. <br /><br />
 
                       <b>5. Propiedad Intelectual:</b> <br /><br />
                       Las cocinas ocultas no pueden utilizar la marca de Foodllowers ni su contenido sin la autorización previa por escrito. <br /><br /> Todo uso no autorizado puede resultar en acciones legales. <br /><br />
@@ -90,6 +102,25 @@ export default function Login () {
                   <ModalFooter>
                     {}
                   </ModalFooter>
+                </>
+              )}
+            </ModalContent>
+          </Modal>
+          <Modal isOpen={isOpenModal} onOpenChange={onOpenChangeModal}>
+            <ModalContent>
+              {() => (
+                <>
+                  <ModalHeader>
+                    <div className='flex flex-col gap-3 justify-center items-center w-full'>
+                      <ClipboardList size={30} />
+                      <p className='font-semibold text-lg'>
+                        Términos y Condiciones de Uso
+                      </p>
+                    </div>
+                  </ModalHeader>
+                  <ModalBody>
+                    para continuar debes aceptar los términos y condiciones de uso
+                  </ModalBody>
                 </>
               )}
             </ModalContent>
