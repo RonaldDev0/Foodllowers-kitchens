@@ -112,12 +112,16 @@ export function CurrentOrder ({ currentOrder }: { currentOrder: any }) {
           )}
         </CardHeader>
         <CardBody>
-          <div className='mb-2 text-purple-800 flex items-center gap-2 cursor-pointer' onClick={onOpen}>
-            <Info size={20} />
-            <p>
-              Ingredientes
-            </p>
-          </div>
+          {
+            currentOrder.product.id === '471ba020-79b7-4204-9e9d-2e8ca2b0f216' && (
+              <div className='mb-2 text-purple-800 flex items-center gap-2 cursor-pointer' onClick={onOpen}>
+                <Info size={20} />
+                <p>
+                  Ingredientes
+                </p>
+              </div>
+            )
+          }
           <Image
             src={currentOrder.product.preview}
             width='200'
