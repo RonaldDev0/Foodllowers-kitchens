@@ -2,7 +2,7 @@
 import Link from 'next/link'
 import { useData } from '@/store'
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Avatar, Card, CardHeader } from '@nextui-org/react'
-import { Home, User, History, LogOut, ChefHat, Settings } from 'lucide-react'
+import { Home, User, History, LogOut, ChefHat, Settings, Bike } from 'lucide-react'
 import { useSupabase } from '../app/providers'
 
 export function NavBarr () {
@@ -25,6 +25,11 @@ export function NavBarr () {
           <Link href='/'>
             <Home size={28} />
           </Link>
+          {user.id === 'cbeb57ee-e13b-4e51-9c0c-51f0b0c48c63' && (
+            <Link href='/get-delivery'>
+              <Bike size={28} />
+            </Link>
+          )}
           <Link href='/products'>
             <ChefHat size={28} />
           </Link>

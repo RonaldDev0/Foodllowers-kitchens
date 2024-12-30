@@ -44,7 +44,8 @@ interface State {
   } | null
   currentOrders: order[] | null
   orders: order[]
-  pendingDeliveryAssignmentOrders: any[]
+  pendingDeliveryAssignmentOrders: any[],
+  kitchenToken: any
 }
 
 interface Actions {
@@ -70,6 +71,7 @@ export const useData = create<State & Actions>(set => ({
   currentOrders: [],
   orders: [],
   pendingDeliveryAssignmentOrders: [],
+  kitchenToken: null,
   setStore: (property, value) => set(prev => ({ ...prev, [property]: value })),
   addOrder: (newOrder) => set(state => ({ orders: [...state.orders, newOrder] })),
   deleteOrder: (orderId) => set(state => ({ orders: state.orders.filter(order => order.id !== orderId) }))

@@ -28,17 +28,16 @@ const Context = createContext<SupabaseContext | undefined>(undefined)
 export function Providers ({ children }: { children: ReactNode }) {
   const [supabase] = useState(() => createPagesBrowserClient())
   const router = useRouter()
-  const { addOrder, setStore, orders, currentOrders, kitchen, pendingDeliveryAssignmentOrders, kitchenAddress } = useData()
+  const { addOrder, setStore, orders, currentOrders, kitchen, pendingDeliveryAssignmentOrders, kitchenAddress, kitchenToken } = useData()
 
   const [isFirstTime, setIsFirstTime] = useState(true)
-  const [token, setToken] = useState<object>({})
 
   function assignmentOrders () {
     pendingDeliveryAssignmentOrders.forEach(async ({ id }) => {
       await fetch('/api/search_delivery', {
         cache: 'no-cache',
         method: 'POST',
-        body: JSON.stringify({ kitchenAddress: kitchenAddress.geometry.location, orderID: id, kitchenToken: token })
+        body: JSON.stringify({ kitchenAddress: kitchenAddress.geometry.location, orderID: id, kitchenToken })
       })
         .then(res => res.json())
         .then(({ error, data }) => {
@@ -89,7 +88,7 @@ export function Providers ({ children }: { children: ReactNode }) {
     supabase.auth.getSession()
       .then(({ data: { session } }: any) => {
         if (session) {
-          setToken({ access_token: session.access_token, refresh_token: session.refresh_token })
+          setStore('kitchenToken', { access_token: session.access_token, refresh_token: session.refresh_token })
           setStore('user', session.user)
           supabase
             .from('kitchens')
@@ -139,7 +138,7 @@ export function Providers ({ children }: { children: ReactNode }) {
                           return
                         }
                         if (payload.eventType === 'INSERT' || payload.eventType === 'UPDATE') {
-                          if (payload.new.payment_status === 'approved' && payload.eventType === 'INSERT') setStore('soundAlert', true)
+                          if (payload.new.payment_status === 'approved' && payload.new.product !== null && payload.eventType === 'INSERT') setStore('soundAlert', true)
                           if (payload.new.product && payload.new.payment_status === 'approved') return addOrder(payload.new)
 
                           supabase

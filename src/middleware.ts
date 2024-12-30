@@ -3,27 +3,24 @@ import { NextResponse, NextRequest } from 'next/server'
 
 export async function middleware (req: NextRequest) {
   const res = NextResponse.next()
-
   const supabase = createMiddlewareClient({ req, res })
-  const { data: { session } }: any = await supabase.auth.getSession()
 
-  const isStaticFile = /\.(ico|svg|png|jpg|jpeg|gif|webp)$/
-    .test(req.nextUrl.pathname)
+  const { data: { session } } = await supabase.auth.getSession()
+  const { pathname, searchParams } = req.nextUrl
 
-  const isNotLoginPage = !req.nextUrl.pathname.startsWith('/_next') &&
-    !isStaticFile &&
-    req.nextUrl.pathname !== '/login' &&
-    req.nextUrl.pathname !== '/manifest.json' &&
-    !req.nextUrl.searchParams.has('code')
+  if (searchParams.has('code')) return res
 
-  if (req.url.endsWith('/login') &&
-    session?.user?.role === 'authenticated') {
+  if (pathname === '/login' && session?.user?.role === 'authenticated') {
     return NextResponse.redirect(new URL('/', req.url))
   }
 
-  if (session === null && isNotLoginPage) {
+  if (!session && pathname !== '/login' && pathname !== '/install') {
     return NextResponse.redirect(new URL('/login', req.url))
   }
 
   return res
+}
+
+export const config = {
+  matcher: ['/((?!_next/static|_next/image|favicon.ico|manifest.json|icons/|img/).*)']
 }
