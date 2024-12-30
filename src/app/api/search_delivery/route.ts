@@ -27,7 +27,7 @@ export async function POST (req: NextRequest) {
 
       data.forEach(({ id, current_location }) => {
         const distance = calculateHaversineDistance(kitchenAddress, current_location)
-        if (distance < shortestDistance) {
+        if (distance < shortestDistance && distance < 15) {
           shortestDistance = distance
           closestDeliveryId = id
         }
