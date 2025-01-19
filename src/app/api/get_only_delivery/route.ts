@@ -2,7 +2,8 @@
 import { z } from 'zod'
 import { supabase } from '@/lib/supabase'
 import { NextRequest, NextResponse } from 'next/server'
-import { calculateHaversineDistance } from './calculateHaversineDistance'
+import { calculateHaversineDistance } from '../calculateHaversineDistance'
+import { calculateDeliveryEarnings } from '../calculateDeliveryEarnings'
 
 const schema = z.object({
   kitchen_address: z.object({
@@ -29,16 +30,20 @@ const schema = z.object({
   })
 })
 
+const COMISION = 2000
+
 export async function POST (req: NextRequest) {
   try {
     const body = await req.json()
     const { kitchen_address, user_address, user_name, user_email } = schema.parse(body)
 
+    const delivery = calculateDeliveryEarnings(user_address.geometry.location)
+
     // create order with fuego Burguer Product
     const { data: orderID, error: OrderError } = await supabase
       .from('orders')
       .insert([{
-        user_id: 'cbeb57ee-e13b-4e51-9c0c-51f0b0c48c63', // ronaldsito7745@gmail.com
+        user_id: 'cbeb57ee-e13b-4e51-9c0c-51f0b0c48c63', // requisito para compra (ronaldsito7745@gmail.com)
         user_name: user_name || 'Desconocido',
         product: null,
         order_state: 'buscando delivery...',
@@ -58,9 +63,12 @@ export async function POST (req: NextRequest) {
           mercadopago: 0,
           influencer: 0,
           kitchen: 0,
-          delivery: { service: 0, tip: 0 }, // pending
-          earnings: 1000,
-          total: 1000
+          delivery: {
+            service: delivery.service - COMISION,
+            tip: delivery.tip
+          },
+          earnings: COMISION,
+          total: delivery.service + delivery.tip
         }
       }])
       .select('id')
