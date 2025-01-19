@@ -28,41 +28,7 @@ const Context = createContext<SupabaseContext | undefined>(undefined)
 export function Providers ({ children }: { children: ReactNode }) {
   const [supabase] = useState(() => createPagesBrowserClient())
   const router = useRouter()
-  const { addOrder, setStore, orders, currentOrders, kitchen, pendingDeliveryAssignmentOrders, kitchenAddress, kitchenToken } = useData()
-
-  const [isFirstTime, setIsFirstTime] = useState(true)
-
-  function assignmentOrders () {
-    pendingDeliveryAssignmentOrders.forEach(async ({ id }) => {
-      await fetch('/api/search_delivery', {
-        cache: 'no-cache',
-        method: 'POST',
-        body: JSON.stringify({ kitchenAddress: kitchenAddress.geometry.location, orderID: id, kitchenToken })
-      })
-        .then(res => res.json())
-        .then(({ error, data }) => {
-          if (error) return
-
-          setStore('pendingDeliveryAssignmentOrders', pendingDeliveryAssignmentOrders.filter(order => order.id !== data.orderID))
-        })
-    })
-  }
-
-  useEffect(() => {
-    if (!kitchen || !pendingDeliveryAssignmentOrders.length) return
-
-    if (isFirstTime) {
-      setIsFirstTime(false)
-      assignmentOrders()
-      return
-    }
-
-    const intervalId = setInterval(() => {
-      assignmentOrders()
-    }, 6 * 60 * 1000)
-
-    return () => clearInterval(intervalId)
-  }, [pendingDeliveryAssignmentOrders])
+  const { addOrder, setStore, orders, currentOrders, kitchen } = useData()
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(() => router.refresh())
@@ -120,7 +86,6 @@ export function Providers ({ children }: { children: ReactNode }) {
                   .eq('payment_status', 'approved')
                   .in('order_state', ['buscando cocina...', 'cocinando...', 'buscando delivery...'])
                   .then(({ data }) => {
-                    setStore('pendingDeliveryAssignmentOrders', data?.filter(order => order.order_state === 'buscando delivery...' && order.delivery_id === null && order.pickUpInStore === false))
                     setStore('orders', data?.filter(order => order.order_state === 'buscando cocina...'))
                     setStore('currentOrders', data?.filter(order => order.order_state === 'cocinando...'))
                     supabase.channel('orders').on(
@@ -148,7 +113,6 @@ export function Providers ({ children }: { children: ReactNode }) {
                             .eq('payment_status', 'approved')
                             .in('order_state', ['buscando cocina...', 'cocinando...', 'buscando delivery...'])
                             .then(({ data }) => {
-                              setStore('pendingDeliveryAssignmentOrders', data?.filter(order => order.order_state === 'buscando delivery...' && order.delivery_id === null && order.pickUpInStore === false))
                               setStore('orders', data?.filter(order => order.order_state === 'buscando cocina...'))
                               setStore('currentOrders', data?.filter(order => order.order_state === 'cocinando...'))
                             })

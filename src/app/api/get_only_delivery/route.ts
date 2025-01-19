@@ -103,7 +103,7 @@ export async function POST (req: NextRequest) {
     // update order state with delivery id
     const { error } = await supabase
       .from('orders')
-      .update({ delivery_id: deliveryId, order_state: 'buscando delivery...' })
+      .update({ delivery_id: deliveryId, order_state: 'recogiendo...' })
       .eq('id', orderID[0].id)
 
     if (error) throw new Error('Error interno del servidor')

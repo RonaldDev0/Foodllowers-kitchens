@@ -43,7 +43,7 @@ export async function POST (req: NextRequest) {
   // update order state
   const { error: updateOrderError } = await supabase
     .from('orders')
-    .update({ delivery_id, order_state: 'buscando delivery...' })
+    .update({ delivery_id, order_state: 'recogiendo...' })
     .eq('id', orderID)
 
   if (updateOrderError) {
