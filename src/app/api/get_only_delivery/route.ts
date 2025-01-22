@@ -30,14 +30,12 @@ const schema = z.object({
   })
 })
 
-const COMISION = 2000
-
 export async function POST (req: NextRequest) {
   try {
     const body = await req.json()
     const { kitchen_address, user_address, user_name, user_email } = schema.parse(body)
 
-    const delivery = calculateDeliveryEarnings(user_address.geometry.location)
+    const delivery = calculateDeliveryEarnings(user_address.geometry.location.lat, user_address.geometry.location.lng)
 
     // create order with fuego Burguer Product
     const { data: orderID, error: OrderError } = await supabase
@@ -64,10 +62,10 @@ export async function POST (req: NextRequest) {
           influencer: 0,
           kitchen: 0,
           delivery: {
-            service: delivery.service - COMISION,
+            service: delivery.service * 0.9,
             tip: delivery.tip
           },
-          earnings: COMISION,
+          earnings: delivery.service * 0.1,
           total: delivery.service + delivery.tip
         }
       }])
