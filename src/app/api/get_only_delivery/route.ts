@@ -2,7 +2,8 @@
 import { z } from 'zod'
 import { supabase } from '@/lib/supabase'
 import { NextRequest, NextResponse } from 'next/server'
-import { calculateHaversineDistance } from './calculateHaversineDistance'
+import { calculateHaversineDistance } from '../calculateHaversineDistance'
+import { calculateDeliveryEarnings } from '../calculateDeliveryEarnings'
 
 const schema = z.object({
   kitchen_address: z.object({
@@ -34,11 +35,13 @@ export async function POST (req: NextRequest) {
     const body = await req.json()
     const { kitchen_address, user_address, user_name, user_email } = schema.parse(body)
 
+    const delivery = calculateDeliveryEarnings(user_address.geometry.location.lat, user_address.geometry.location.lng)
+
     // create order with fuego Burguer Product
     const { data: orderID, error: OrderError } = await supabase
       .from('orders')
       .insert([{
-        user_id: 'cbeb57ee-e13b-4e51-9c0c-51f0b0c48c63', // ronaldsito7745@gmail.com
+        user_id: 'cbeb57ee-e13b-4e51-9c0c-51f0b0c48c63', // requisito para compra (ronaldsito7745@gmail.com)
         user_name: user_name || 'Desconocido',
         product: null,
         order_state: 'buscando delivery...',
@@ -58,9 +61,12 @@ export async function POST (req: NextRequest) {
           mercadopago: 0,
           influencer: 0,
           kitchen: 0,
-          delivery: { service: 0, tip: 0 }, // pending
-          earnings: 1000,
-          total: 1000
+          delivery: {
+            service: delivery.service * 0.9,
+            tip: delivery.tip
+          },
+          earnings: delivery.service * 0.1,
+          total: delivery.service + delivery.tip
         }
       }])
       .select('id')
@@ -103,7 +109,7 @@ export async function POST (req: NextRequest) {
     // update order state with delivery id
     const { error } = await supabase
       .from('orders')
-      .update({ delivery_id: deliveryId, order_state: 'buscando delivery...' })
+      .update({ delivery_id: deliveryId, order_state: 'recogiendo...' })
       .eq('id', orderID[0].id)
 
     if (error) throw new Error('Error interno del servidor')

@@ -10,7 +10,7 @@ import { useSupabase } from '../providers'
 
 export function DeliveryForm ({ pendingDeliveryAssignmentOrders, setPendingDeliveryAssignmentOrders }: { pendingDeliveryAssignmentOrders: [], setPendingDeliveryAssignmentOrders: Function }) {
   const { supabase } = useSupabase()
-  const { darkMode, kitchenToken, kitchen } = useData()
+  const { darkMode, kitchen, kitchenToken } = useData()
 
   const [input, setInput] = useState('')
   const [addressError, setAddressError] = useState(false)
@@ -20,7 +20,7 @@ export function DeliveryForm ({ pendingDeliveryAssignmentOrders, setPendingDeliv
   const [predictions, setPredictions] = useState<any>([])
   const [timeoutId, setTimeoutId] = useState<any>(null)
 
-  const [kitchenAddress, setKitchenAddress] = useState<any>(JSON.parse(localStorage.getItem('kitchenAddress') || 'null'))
+  const [kitchenAddress, setKitchenAddress] = useState<any>(JSON.parse(localStorage.getItem('kitchenAddress')!))
   const [kitchenAddressError, setKitchenAddressError] = useState(false)
 
   const [number, setNumber] = useState('')
@@ -96,7 +96,8 @@ export function DeliveryForm ({ pendingDeliveryAssignmentOrders, setPendingDeliv
         setAddress(null)
         if (!data.deliveryId) {
           toast.info('Buscando domiciliario...')
-          data.orderID[0].id && setPendingDeliveryAssignmentOrders([...pendingDeliveryAssignmentOrders, { id: data.orderID[0].id }])
+          const id = data.orderID[0].id
+          id && setPendingDeliveryAssignmentOrders([...pendingDeliveryAssignmentOrders, { id }])
           return
         }
         toast.success('Domiciliario solicitado')
@@ -105,15 +106,22 @@ export function DeliveryForm ({ pendingDeliveryAssignmentOrders, setPendingDeliv
 
   async function assignmentOrders () {
     while (pendingDeliveryAssignmentOrders.length > 0) {
-      const currentOrders = [...pendingDeliveryAssignmentOrders] // Crea una copia de las órdenes pendientes.
-      for (const { id } of currentOrders) {
+      const orders = [...pendingDeliveryAssignmentOrders] // Copia de la lista actual para evitar problemas de referencia
+
+      for (const { id } of orders) {
+        if (!kitchenAddress) return
+
         try {
-          if (!kitchenAddress) return
           const response = await fetch('/api/search_delivery', {
             cache: 'no-cache',
             method: 'POST',
-            body: JSON.stringify({ kitchenAddress: kitchenAddress.geometry.location, orderID: id, kitchenToken })
+            body: JSON.stringify({
+              kitchenAddress: kitchenAddress.geometry.location,
+              orderID: id,
+              kitchenToken
+            })
           })
+
           const { error, data } = await response.json()
 
           if (!error && data) {
@@ -121,26 +129,23 @@ export function DeliveryForm ({ pendingDeliveryAssignmentOrders, setPendingDeliv
               prev.filter((order: any) => order.id !== data.orderID)
             )
             setButtonLoading(false)
-            toast.success('Domiciliario asignado')
+            toast.success('Domiciliario asignado para la orden')
           }
         } catch (err) {
-          console.error('Error fetching delivery:', err)
+          // console.error(`Error asignando domiciliario a la orden ${id}:`, err)
         }
       }
-      // Short pause to avoid a continuous loop that consumes excessive resources.
-      await new Promise((resolve) => setTimeout(resolve, 30 * 1000))
+
+      // Pausa de 30 segundos antes del siguiente ciclo
+      await new Promise((resolve) => setTimeout(resolve, 30000))
     }
   }
 
   useEffect(() => {
-    if (!kitchen || !pendingDeliveryAssignmentOrders.length) return
+    if (!kitchen || pendingDeliveryAssignmentOrders.length === 0) return
 
-    const executeAssignmentOrders = async () => {
-      await assignmentOrders()
-    }
-
-    executeAssignmentOrders()
-  }, [pendingDeliveryAssignmentOrders])
+    assignmentOrders() // Ejecuta el procesamiento mientras haya órdenes pendientes
+  }, [pendingDeliveryAssignmentOrders, kitchen])
 
   useEffect(() => {
     if (!kitchen) return
@@ -148,7 +153,10 @@ export function DeliveryForm ({ pendingDeliveryAssignmentOrders, setPendingDeliv
     supabase
       .from('orders')
       .select('id')
-      .or('product.is.null,and(invoice_id.is.null)')
+      .match({
+        order_state: 'buscando delivery...',
+        kitchen_id: 'd791a2aa-0fd0-43e4-8819-459be503b5f2'
+      })
       .then(({ data, error }) => {
         if (error) return
 

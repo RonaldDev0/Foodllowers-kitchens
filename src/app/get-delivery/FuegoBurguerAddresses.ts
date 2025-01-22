@@ -11,6 +11,7 @@ type IAddress = {
 }
 
 export const addresses: IAddress[] = [
+  // chapinero
   {
     key: '1',
     number: '3202700938',
@@ -22,8 +23,21 @@ export const addresses: IAddress[] = [
     },
     formatted_address: 'Cra. 16 #63-69, Bogotá, Colombia'
   },
+  // sede modelia
+  // {
+  //   key: '2',
+  //   number: '3202694642',
+  //   geometry: {
+  //     location: {
+  //       lat: 0,
+  //       lng: 0
+  //     }
+  //   },
+  //   formatted_address: 'Carrera 68 # 22f 18'
+  // },
+  // sede prado
   {
-    key: '2',
+    key: '3',
     number: '3202694620',
     geometry: {
       location: {
@@ -33,8 +47,9 @@ export const addresses: IAddress[] = [
     },
     formatted_address: 'Cl. 134a #50-27, Suba, Bogotá, Colombia'
   },
+  // sede poblado
   {
-    key: '3',
+    key: '4',
     number: '',
     geometry: {
       location: {
@@ -43,16 +58,17 @@ export const addresses: IAddress[] = [
       }
     },
     formatted_address: 'Cl. 26 #43G -30, El Poblado, Medellín, El Poblado, Medellín, Antioquia, Colombia'
+  },
+  // sede bello
+  {
+    key: '5',
+    number: '',
+    geometry: {
+      location: {
+        lat: 6.3136148,
+        lng: -75.5610805
+      }
+    },
+    formatted_address: 'Cl. 24 #55-04, Guayacanes Del Norte, Bello, Antioquia, Colombia'
   }
-  // {
-  //   key: '4',
-  //   number: '3202694642',
-  //   geometry: {
-  //     location: {
-  //       lat: 0,
-  //       lng: 0
-  //     }
-  //   },
-  //   formatted_address: 'Avenida ciudad de cali.  22f 18'
-  // }
 ]

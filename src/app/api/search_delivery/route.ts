@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
-import { calculateHaversineDistance } from './calculateHaversineDistance'
+import { calculateHaversineDistance } from '../calculateHaversineDistance'
 
 const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!)
 
@@ -43,7 +43,7 @@ export async function POST (req: NextRequest) {
   // update order state
   const { error: updateOrderError } = await supabase
     .from('orders')
-    .update({ delivery_id, order_state: 'buscando delivery...' })
+    .update({ delivery_id, order_state: 'recogiendo...' })
     .eq('id', orderID)
 
   if (updateOrderError) {
