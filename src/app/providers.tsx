@@ -25,10 +25,57 @@ type SupabaseContext = {
 
 const Context = createContext<SupabaseContext | undefined>(undefined)
 
+function delay (ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}
+
 export function Providers ({ children }: { children: ReactNode }) {
   const [supabase] = useState(() => createPagesBrowserClient())
   const router = useRouter()
-  const { addOrder, setStore, orders, currentOrders, kitchen } = useData()
+  const { addOrder, setStore, orders, currentOrders, kitchen, pendingDeliveryAssignmentOrders, kitchenToken } = useData()
+
+  const assignOrdersWithDelay = async () => {
+    const kitchenAddress = JSON.parse(localStorage.getItem('kitchenAddress')!).geometry.location
+    if (!kitchen || !pendingDeliveryAssignmentOrders.length || !kitchenAddress) return
+
+    for (const { id } of pendingDeliveryAssignmentOrders) {
+      try {
+        const res = await fetch('/api/search_delivery', {
+          cache: 'no-cache',
+          method: 'POST',
+          body: JSON.stringify({
+            kitchenAddress,
+            orderID: id,
+            kitchenToken
+          })
+        })
+        const { data, error } = await res.json()
+
+        if (error) return
+
+        setStore(
+          'pendingDeliveryAssignmentOrders',
+          pendingDeliveryAssignmentOrders.filter((order: any) => order.id !== data.orderID)
+        )
+
+        setStore('toastDelivery', true)
+
+        await delay(200)
+      } catch (err) {
+        // console.error('Error asignando domiciliario:', err)
+      }
+    }
+  }
+
+  useEffect(() => {
+    assignOrdersWithDelay()
+
+    const interval = setInterval(() => {
+      assignOrdersWithDelay()
+    }, 60000)
+
+    return () => clearInterval(interval)
+  }, [assignOrdersWithDelay])
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(() => router.refresh())
@@ -86,6 +133,7 @@ export function Providers ({ children }: { children: ReactNode }) {
                   .eq('payment_status', 'approved')
                   .in('order_state', ['buscando cocina...', 'cocinando...', 'buscando delivery...'])
                   .then(({ data }) => {
+                    setStore('pendingDeliveryAssignmentOrders', data?.filter(order => order.order_state === 'buscando delivery...'))
                     setStore('orders', data?.filter(order => order.order_state === 'buscando cocina...'))
                     setStore('currentOrders', data?.filter(order => order.order_state === 'cocinando...'))
                     supabase.channel('orders').on(
@@ -113,6 +161,7 @@ export function Providers ({ children }: { children: ReactNode }) {
                             .eq('payment_status', 'approved')
                             .in('order_state', ['buscando cocina...', 'cocinando...', 'buscando delivery...'])
                             .then(({ data }) => {
+                              setStore('pendingDeliveryAssignmentOrders', data?.filter(order => order.order_state === 'buscando delivery...'))
                               setStore('orders', data?.filter(order => order.order_state === 'buscando cocina...'))
                               setStore('currentOrders', data?.filter(order => order.order_state === 'cocinando...'))
                             })

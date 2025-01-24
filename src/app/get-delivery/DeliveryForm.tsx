@@ -3,14 +3,14 @@
 import { Button, Input, Select, SelectItem, Card, CircularProgress } from '@nextui-org/react'
 import { MapPin, InfoIcon } from 'lucide-react'
 import { addresses } from './FuegoBurguerAddresses'
-import { useState, useEffect, type FormEvent } from 'react'
+import { useEffect, useState, type FormEvent } from 'react'
 import { Toaster, toast } from 'sonner'
 import { useData } from '@/store'
-import { useSupabase } from '../providers'
+import { Howl } from 'howler'
+const sound = new Howl({ src: ['../../alert.mp3'] })
 
-export function DeliveryForm ({ pendingDeliveryAssignmentOrders, setPendingDeliveryAssignmentOrders }: { pendingDeliveryAssignmentOrders: [], setPendingDeliveryAssignmentOrders: Function }) {
-  const { supabase } = useSupabase()
-  const { darkMode, kitchen, kitchenToken } = useData()
+export function DeliveryForm () {
+  const { darkMode, pendingDeliveryAssignmentOrders, toastDelivery, setStore } = useData()
 
   const [input, setInput] = useState('')
   const [addressError, setAddressError] = useState(false)
@@ -97,72 +97,20 @@ export function DeliveryForm ({ pendingDeliveryAssignmentOrders, setPendingDeliv
         if (!data.deliveryId) {
           toast.info('Buscando domiciliario...')
           const id = data.orderID[0].id
-          id && setPendingDeliveryAssignmentOrders([...pendingDeliveryAssignmentOrders, { id }])
+          id && setStore('pendingDeliveryAssignmentOrders', [...pendingDeliveryAssignmentOrders, { id }])
           return
         }
+        sound.play()
         toast.success('Domiciliario solicitado')
       })
   }
 
-  async function assignmentOrders () {
-    while (pendingDeliveryAssignmentOrders.length > 0) {
-      const orders = [...pendingDeliveryAssignmentOrders] // Copia de la lista actual para evitar problemas de referencia
-
-      for (const { id } of orders) {
-        if (!kitchenAddress) return
-
-        try {
-          const response = await fetch('/api/search_delivery', {
-            cache: 'no-cache',
-            method: 'POST',
-            body: JSON.stringify({
-              kitchenAddress: kitchenAddress.geometry.location,
-              orderID: id,
-              kitchenToken
-            })
-          })
-
-          const { error, data } = await response.json()
-
-          if (!error && data) {
-            setPendingDeliveryAssignmentOrders((prev: any) =>
-              prev.filter((order: any) => order.id !== data.orderID)
-            )
-            setButtonLoading(false)
-            toast.success('Domiciliario asignado para la orden')
-          }
-        } catch (err) {
-          // console.error(`Error asignando domiciliario a la orden ${id}:`, err)
-        }
-      }
-
-      // Pausa de 30 segundos antes del siguiente ciclo
-      await new Promise((resolve) => setTimeout(resolve, 30000))
-    }
-  }
-
   useEffect(() => {
-    if (!kitchen || pendingDeliveryAssignmentOrders.length === 0) return
-
-    assignmentOrders() // Ejecuta el procesamiento mientras haya órdenes pendientes
-  }, [pendingDeliveryAssignmentOrders, kitchen])
-
-  useEffect(() => {
-    if (!kitchen) return
-
-    supabase
-      .from('orders')
-      .select('id')
-      .match({
-        order_state: 'buscando delivery...',
-        kitchen_id: 'd791a2aa-0fd0-43e4-8819-459be503b5f2'
-      })
-      .then(({ data, error }) => {
-        if (error) return
-
-        setPendingDeliveryAssignmentOrders(data)
-      })
-  }, [kitchen])
+    if (!toastDelivery) return
+    setStore('toastDelivery', false)
+    toast.success('Domiciliario asignado')
+    sound.play()
+  }, [toastDelivery])
 
   return (
     <>
