@@ -23,6 +23,7 @@ export interface order {
 
 interface State {
   soundAlert: boolean
+  toastDelivery: boolean
   darkMode: boolean
   balanceFetched: boolean
   balance: number
@@ -56,6 +57,7 @@ interface Actions {
 
 export const useData = create<State & Actions>(set => ({
   soundAlert: false,
+  toastDelivery: false,
   darkMode: typeof window !== 'undefined' && JSON.parse(localStorage.getItem('darkMode') || 'true'),
   balanceFetched: false,
   balance: 0,

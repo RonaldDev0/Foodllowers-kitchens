@@ -1,12 +1,10 @@
 'use client'
 import { DeliveryForm } from './DeliveryForm'
 import { useData } from '@/store'
-import { useState } from 'react'
 import { DeliverysPending } from './DeliverysPending'
 
 export default function GetDeliveryPage () {
   const { user } = useData()
-  const [pendingDeliveryAssignmentOrders, setPendingDeliveryAssignmentOrders] = useState<any>([])
 
   if (user === null || user.id !== 'cbeb57ee-e13b-4e51-9c0c-51f0b0c48c63') return null
 
@@ -17,11 +15,8 @@ export default function GetDeliveryPage () {
           Pide tu domiciliario
         </p>
       </div>
-      <DeliveryForm
-        pendingDeliveryAssignmentOrders={pendingDeliveryAssignmentOrders}
-        setPendingDeliveryAssignmentOrders={setPendingDeliveryAssignmentOrders}
-      />
-      <DeliverysPending pendingDeliveryAssignmentOrders={pendingDeliveryAssignmentOrders} />
+      <DeliveryForm />
+      <DeliverysPending />
     </div>
   )
 }
